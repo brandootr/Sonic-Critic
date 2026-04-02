@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Settings name="Settings" version="1">
+	<Section path="SongRenderer">
+		<Attributes fileName="02 - Three Days in the Dark" markerIndex="0" outputList="{48499A88-C738-4EA0-A1B0-8A95F6F2F35E}"/>
+	</Section>
+	<Section path="SoundVariations">
+		<Attributes version="1"/>
+	</Section>
+</Settings>

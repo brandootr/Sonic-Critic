@@ -1,0 +1,141 @@
+C:\Program Files\Common Files\VST3\4Front Piano x64.vst
+C:\Program Files\Common Files\VST3\Attracktive.vst3
+C:\Program Files\Common Files\VST3\Bertom_DenoiserClassic.vst3
+C:\Program Files\Common Files\VST3\DelaySon.vst3
+C:\Program Files\Common Files\VST3\Proteus.vst3
+C:\Program Files\Common Files\VST3\TAL-Chorus-LX.vst3
+C:\Program Files\Common Files\VST3\Vastaus.vst3
+C:\Program Files\Common Files\VST3\ACE Bridge 2.vst3
+C:\Program Files\Common Files\VST3\ACE Bridge ARA.vst3
+C:\Program Files\Common Files\VST3\ACE Bridge.vst3
+C:\Program Files\Common Files\VST3\Amped - Block Letter.vst3
+C:\Program Files\Common Files\VST3\Amped - Fluff 2C.vst3
+C:\Program Files\Common Files\VST3\Amped - Humble.vst3
+C:\Program Files\Common Files\VST3\Amped - Roots.vst3
+C:\Program Files\Common Files\VST3\Amped - Volcano.vst3
+C:\Program Files\Common Files\VST3\amplistortion2_64bits.vst3
+C:\Program Files\Common Files\VST3\Auburn Sounds Panagement 2-64.vst3
+C:\Program Files\Common Files\VST3\BFDPlayer.vst3
+C:\Program Files\Common Files\VST3\Boogex.vst3
+C:\Program Files\Common Files\VST3\bx_blackdist2.vst3
+C:\Program Files\Common Files\VST3\bx_bluechorus2.vst3
+C:\Program Files\Common Files\VST3\bx_boom.vst3
+C:\Program Files\Common Files\VST3\bx_cleansweep V2.vst3
+C:\Program Files\Common Files\VST3\bx_distorange.vst3
+C:\Program Files\Common Files\VST3\bx_greenscreamer.vst3
+C:\Program Files\Common Files\VST3\bx_masterdesk Classic.vst3
+C:\Program Files\Common Files\VST3\bx_megasingle.vst3
+C:\Program Files\Common Files\VST3\bx_metal2.vst3
+C:\Program Files\Common Files\VST3\bx_meter.vst3
+C:\Program Files\Common Files\VST3\bx_opto Pedal.vst3
+C:\Program Files\Common Files\VST3\bx_rockrack V3 Player.vst3
+C:\Program Files\Common Files\VST3\bx_shredspread.vst3
+C:\Program Files\Common Files\VST3\bx_solo.vst3
+C:\Program Files\Common Files\VST3\bx_subfilter.vst3
+C:\Program Files\Common Files\VST3\bx_subsynth.vst3
+C:\Program Files\Common Files\VST3\bx_tuner.vst3
+C:\Program Files\Common Files\VST3\bx_yellowdrive.vst3
+C:\Program Files\Common Files\VST3\Clear.vst3
+C:\Program Files\Common Files\VST3\CUBE.vst3
+C:\Program Files\Common Files\VST3\elysia niveau filter.vst3
+C:\Program Files\Common Files\VST3\Emissary.vst3
+C:\Program Files\Common Files\VST3\Kontakt 7.vst3
+C:\Program Files\Common Files\VST3\Kontakt 8.vst3
+C:\Program Files\Common Files\VST3\LoudMax.vst3
+C:\Program Files\Common Files\VST3\MLDrums.vst3
+C:\Program Files\Common Files\VST3\MT-PowerDrumKit.vst3
+C:\Program Files\Common Files\VST3\NadIR.vst3
+C:\Program Files\Common Files\VST3\NAM Universal.vst3
+C:\Program Files\Common Files\VST3\PlaceIt.vst3
+C:\Program Files\Common Files\VST3\Puncher2Lite.vst3
+C:\Program Files\Common Files\VST3\RRS EQ560 Free VST3_64.vst3
+C:\Program Files\Common Files\VST3\ShapeIt.vst3
+C:\Program Files\Common Files\VST3\smartEQ3.vst3
+C:\Program Files\Common Files\VST3\SPL Free Ranger.vst3
+C:\Program Files\Common Files\VST3\TDR Nova.vst3
+C:\Program Files\Common Files\VST3\WaveShell1-VST3 16.0_x64.vst3
+C:\Program Files\Common Files\VST3\Youlean Loudness Meter 2.vst3
+C:\Program Files\Common Files\VST3\Attracktive.vst3\Contents\x86_64-win\Attracktive.vst3
+C:\Program Files\Common Files\VST3\Bertom_DenoiserClassic.vst3\Contents\x86_64-win\Bertom_DenoiserClassic.vst3
+C:\Program Files\Common Files\VST3\Celemony\Melodyne\Melodyne.vst3
+C:\Program Files\Common Files\VST3\DelaySon.vst3\Contents\x86_64-win\DelaySon.vst3
+C:\Program Files\Common Files\VST3\Eventide\Temperance Lite.vst3
+C:\Program Files\Common Files\VST3\Eventide\Temperance Lite.vst3\Contents\x86_64-win\Temperance Lite.vst3
+C:\Program Files\Common Files\VST3\Fire-Windows\VST3\Fire.vst3
+C:\Program Files\Common Files\VST3\Fire-Windows\VST3\Fire.vst3\Contents\x86_64-win\Fire.vst3
+C:\Program Files\Common Files\VST3\Fire-Windows\VST3\Fire.vst3\Contents\x86_64-win\Fire.vst3.manifest
+C:\Program Files\Common Files\VST3\Fire.vst3\Contents\x86_64-win\Fire.vst3
+C:\Program Files\Common Files\VST3\iZotope\Insight 2.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Channel Mixer.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Comb Filter.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Delay.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Dual Delay.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Ensemble.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Filter.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Flanger.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Formant Filter.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Frequency Shifter.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Gain.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Pitch Shifter.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Reverb.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Reverser.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Shaper.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Stereo.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Tape Stop.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Trance Gate.vst3
+C:\Program Files\Common Files\VST3\Kilohearts\kHs Transient Shaper.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Delay\MDelay.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Distortion\MBitFun.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Distortion\MSaturator.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Distortion\MWaveFolder.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Distortion\MWaveShaper.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Dynamics\MAGC.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Dynamics\MCompressor.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\EQ\MEqualizer.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Filter\MBandPass.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Filter\MComb.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Modulation\MAutopan.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Modulation\MFlanger.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Modulation\MFreqShifter.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Modulation\MPhaser.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Modulation\MRingModulator.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Modulation\MTremolo.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Modulation\MVibrato.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Pitch Shift\MAutoPitch.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Reverb\MCharmVerb.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Reverb\MConvolutionEZ.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Stereo\MSpectralPan.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Stereo\MStereoExpander.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Stereo\MStereoScope.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MAnalyzer.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MCCGenerator.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MChannelMatrix.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MFreeformPhase.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MLoudnessAnalyzer.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MMetronome.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MNoiseGenerator.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MNotepad.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MOscillator.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MOscilloscope.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MRatio.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MRatioMB.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MRecorder.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MTuner.vst3
+C:\Program Files\Common Files\VST3\MeldaProduction\Tools\MUtility.vst3
+C:\Program Files\Common Files\VST3\MuseFX\Chorus.vst3
+C:\Program Files\Common Files\VST3\MuseFX\Compress.vst3
+C:\Program Files\Common Files\VST3\MuseFX\De-Ess.vst3
+C:\Program Files\Common Files\VST3\MuseFX\Delay.vst3
+C:\Program Files\Common Files\VST3\MuseFX\Harmonise.vst3
+C:\Program Files\Common Files\VST3\MuseFX\Master.vst3
+C:\Program Files\Common Files\VST3\MuseFX\NoiseGate.vst3
+C:\Program Files\Common Files\VST3\MuseFX\PitchFix.vst3
+C:\Program Files\Common Files\VST3\MuseFX\ProEQ.vst3
+C:\Program Files\Common Files\VST3\MuseFX\Reverb.vst3
+C:\Program Files\Common Files\VST3\MuseFX\Rotary.vst3
+C:\Program Files\Common Files\VST3\MuseFX\SimpleEQ.vst3
+C:\Program Files\Common Files\VST3\Proteus.vst3\Contents\x86_64-win\Proteus.vst3
+C:\Program Files\Common Files\VST3\Slate Digital\Heatwave.vst3
+C:\Program Files\Common Files\VST3\TAL-Chorus-LX.vst3\Contents\x86_64-win\TAL-Chorus-LX.vst3
+C:\Program Files\Common Files\VST3\Vastaus.vst3\Contents\x86-win\Vastaus.vst3
+C:\Program Files\Common Files\VST3\Vastaus.vst3\Contents\x86_64-win\Vastaus.vst3

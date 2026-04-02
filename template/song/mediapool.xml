@@ -1,0 +1,523 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MediaPool>
+	<Attributes x:id="rootFolder">
+		<MediaFolder name="Audio">
+			<AudioClip mediaID="{7C979554-4D57-402B-8C80-09992357A0D8}" peak="0.57574462890625">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Toms).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12601813" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{101E34F7-A386-4BCF-B776-E3BF002BF114}" peak="0.849945068359375">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Snare).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12601813" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{FAD8C8A7-E621-4AEF-B37F-87133A67A2A7}" peak="0.05950927734375">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Ride).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12601813" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{058F4F84-E901-44AA-A34B-A0B5C77094D2}" peak="0.52032470703125">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Kick).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12601813" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{F57288BA-CCAA-41B2-AB97-07CC172F627F}" peak="0.564178466796875">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Hh).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12601813" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{2A520853-A8AA-4F12-A21F-CBCC83D653B5}" peak="0.30120849609375">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Crash).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12601813" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{E4326805-A2A9-43CC-B313-74AE33E84E0F}" useCount="1" peak="0.966000080108642578125">
+				<Url x:id="path" type="1" url="package://presonus.studioone.IR/Impulses/3000/reverb factory/big snare.wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="158088" sampleRate="44100" numChannels="2" bitDepth="24"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{F1384978-A068-46D3-9999-DF8473331FFC}" peak="0.530670166015625">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Toms)(2).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="9251940" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="1">
+								<Url x:id="bendMarkers" type="1" url="media:///ClipData/Audio/1_2 Drums_(Toms)(2)/1_2 Drums_(Toms)(2)(0).audiobendx"/>
+							</AudioBendProperties>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{98F6E211-4EE8-44BF-8419-0416D895B79F}" peak="0.591949462890625">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Snare)(2).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="9251940" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="1">
+								<Url x:id="bendMarkers" type="1" url="media:///ClipData/Audio/1_2 Drums_(Snare)(2)/1_2 Drums_(Snare)(2)(1).audiobendx"/>
+							</AudioBendProperties>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{34DEF170-D322-4822-BDF5-600D24AE5A11}" peak="0.127166748046875">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Ride)(2).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="9251940" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="1">
+								<Url x:id="bendMarkers" type="1" url="media:///ClipData/Audio/1_2 Drums_(Ride)(2)/1_2 Drums_(Ride)(2)(2).audiobendx"/>
+							</AudioBendProperties>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{1253BE3B-3C06-443C-B2CB-3BD4EACA16DA}" peak="0.359832763671875">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Kick)(2).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="9251940" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="1">
+								<Url x:id="bendMarkers" type="1" url="media:///ClipData/Audio/1_2 Drums_(Kick)(2)/1_2 Drums_(Kick)(2)(3).audiobendx"/>
+							</AudioBendProperties>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{1AC0EEA4-65A7-498C-AEFE-7AA5DB8208A6}" peak="0.416259765625">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Hh)(2).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="9251940" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="1">
+								<Url x:id="bendMarkers" type="1" url="media:///ClipData/Audio/1_2 Drums_(Hh)(2)/1_2 Drums_(Hh)(2)(4).audiobendx"/>
+							</AudioBendProperties>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{E07EACBF-9E05-4762-A239-5C4D95759E25}" peak="0.189544677734375">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Crash)(2).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="9251940" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="1">
+								<Url x:id="bendMarkers" type="1" url="media:///ClipData/Audio/1_2 Drums_(Crash)(2)/1_2 Drums_(Crash)(2)(5).audiobendx"/>
+							</AudioBendProperties>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{53BBB462-0A81-4095-9095-24F688FB574C}" peak="0.49017333984375">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/4 Guitar.wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="10070138" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{01F996C2-8DB1-428B-8D6F-F3ECE0D62DA6}" peak="0.351470947265625">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/3 Bass.wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="10070138" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{7A75ECB2-48E4-495A-A63F-5471C7964A8B}" peak="0.238525390625">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/6 Synth.wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="10070138" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{B8AE06D6-F70F-4D11-9DB5-7BBA296F69D5}" peak="0.703399658203125">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/5 Percussion.wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="10070138" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{477E7946-6D86-4F8A-9D68-57E5E6203FCF}" peak="0.36737060546875">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1 Backing Vocals.wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="10070138" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{C06D64C7-E853-46C5-A4BC-39CBE464F065}" peak="0.693328857421875">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/0 Lead Vocals.wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="10070138" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{9718C44E-49DD-4081-9946-4169CDA55C98}" peak="0.419097900390625">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/4 Guitar(2).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="10070138" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{689A6385-FC24-4A6F-B0C0-2A6AF21FABA4}" peak="0.366607666015625">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Toms)(3).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12324999" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="1">
+								<Url x:id="bendMarkers" type="1" url="media:///ClipData/Audio/1_2 Drums_(Toms)(3)/1_2 Drums_(Toms)(3)(6).audiobendx"/>
+							</AudioBendProperties>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{B6B78101-DBB8-4A2C-845A-625C10888FB4}" peak="0.807586669921875">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Snare)(3).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12324999" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="1">
+								<Url x:id="bendMarkers" type="1" url="media:///ClipData/Audio/1_2 Drums_(Snare)(3)/1_2 Drums_(Snare)(3)(7).audiobendx"/>
+							</AudioBendProperties>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{CB7B3308-97F9-4311-A608-04AC4785FA71}" peak="0.182037353515625">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Ride)(3).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12324999" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="1">
+								<Url x:id="bendMarkers" type="1" url="media:///ClipData/Audio/1_2 Drums_(Ride)(3)/1_2 Drums_(Ride)(3)(8).audiobendx"/>
+							</AudioBendProperties>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{3C893312-1724-4F4F-BA1A-6A508F43B5EA}" peak="0.501312255859375">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Kick)(3).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12324999" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="1">
+								<Url x:id="bendMarkers" type="1" url="media:///ClipData/Audio/1_2 Drums_(Kick)(3)/1_2 Drums_(Kick)(3)(9).audiobendx"/>
+							</AudioBendProperties>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{D65875A9-98BA-4EB6-BAF7-9ADEBB856AED}" peak="0.58367919921875">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Hh)(3).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12324999" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="1">
+								<Url x:id="bendMarkers" type="1" url="media:///ClipData/Audio/1_2 Drums_(Hh)(3)/1_2 Drums_(Hh)(3)(10).audiobendx"/>
+							</AudioBendProperties>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{22A26011-FF3A-477E-BBB1-80C41E871015}" peak="0.524688720703125">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_2 Drums_(Crash)(3).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12324999" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="1">
+								<Url x:id="bendMarkers" type="1" url="media:///ClipData/Audio/1_2 Drums_(Crash)(3)/1_2 Drums_(Crash)(3)(11).audiobendx"/>
+							</AudioBendProperties>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{0753E5C6-547A-44AE-BCE2-60327FA1240E}" peak="0.621490478515625">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/0 Lead Vocals(2).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="13414964" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{F3CD7EC8-67C9-4F9F-86A8-102161DF65E6}" peak="0.266387939453125">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1 Backing Vocals(2).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="13414964" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{54E0C8F6-B293-4B60-8894-F15311632A44}" peak="0.16790771484375">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/3 Bass(2).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="13414964" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{23E3D053-C727-4EE6-803C-679F3B859596}" peak="0.7208251953125">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/4 Guitar(3).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="13414964" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{6CDC12B1-C7CB-4360-9B08-721225F20F9A}" peak="0.613922119140625">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/4 Guitar(4).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="13414964" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{2A4E5431-5C8F-49E0-85A6-66940709EDEF}" peak="0.730194091796875">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/6 Synth(2).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="13414964" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{AAC9682B-DDA3-4F45-9C3C-883056065522}" peak="0.7161865234375">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/5 Percussion(2).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="13414964" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{B920F482-7549-4F22-B6DD-6CBB73E01C97}" peak="0.708282470703125">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/7 Other.wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="13414964" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{285F182B-D9EB-4B3D-9A96-FB04DAAAF80D}" peak="0.621551513671875">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/0 Lead Vocals(3).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="13414964" sampleRate="48000" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{5851F2E9-485F-49B5-99CF-141790F35902}" peak="0.555450439453125">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_0 Lead Vocals_(No Reverb).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12324960" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{15304812-5A4D-409D-A4A9-87E3AAF1CAC8}" peak="0.55181884765625">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_0 Lead Vocals_(No Echo).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12324960" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{48624476-509D-4DA2-97FC-6B8AAA8634F0}" peak="0.57159423828125">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_0 Lead Vocals_(No Noise).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12324960" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{5DB467DF-8682-40E8-8FBF-F10432F5D73C}" peak="0.5478515625">
+				<Url x:id="path" type="1" url="file:///E:/downloads/Zach/02 - Three Days in the Dark/Media/1_1_0 Lead Vocals_(No Noise)_(No Echo).wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="12324960" sampleRate="44100" numChannels="2" bitDepth="16"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+			<AudioClip mediaID="{DA68EB1C-D090-4D3A-B12B-2FFF4178202D}" useCount="1" peak="0.966000080108642578125">
+				<Url x:id="path" type="1" url="package://presonus.studioone.IR/Impulses/6000/vss3 reverb/ambient plate.wav"/>
+				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
+				<Attributes x:id="format" frameCount="256495" sampleRate="96000" numChannels="2" bitDepth="24"/>
+				<List x:id="modifications">
+					<AudioModification id="0">
+						<List x:id="propertySets">
+							<AudioBendProperties threshold="0.2000000000000000111022302462515654042363166809082" visible="0"/>
+						</List>
+					</AudioModification>
+				</List>
+			</AudioClip>
+		</MediaFolder>
+		<MediaFolder name="Music"/>
+		<MediaFolder name="AudioEffects"/>
+	</Attributes>
+	<Attributes x:id="packageInfos">
+		<Association key="samplemagic.studioone.impactxt" value="Impact XT Kits and Sounds"/>
+		<Association key="presonus.studioone.3dir" value="Studio One 3D Impulse Responses"/>
+		<Association key="presonus.studioone.IR" value="Studio One Impulse Responses"/>
+		<Association key="presonus.studioone.dirtyelectrohouse" value="Dirty Electro House"/>
+		<Association key="presonus.studioone.instruments" value="Studio One Instruments Vol 1"/>
+		<Association key="presonus.studioone.instruments2" value="Studio One Instruments Vol 2"/>
+		<Association key="presonus.studioone.vintagekeys" value="Vintage Keys"/>
+	</Attributes>
+	<Attributes x:id="documentPath" type="1" url="file:///E:/downloads/__template/__template.song"/>
+</MediaPool>

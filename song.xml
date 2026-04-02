@@ -1,0 +1,295 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Song popup="0" copyrighted="0" masterWithEffects="1">
+	<Attributes x:id="Root" defaultTimeFormat="2" stretch="1" envelopeVisibility="1" timeFormat="0" length="300">
+		<Attributes x:id="timeContext" sampleRate="48000" frameType="1" frameOffset="0" timeOffset="0" barOffset="0">
+			<TempoMap x:id="tempoMap">
+				<Attributes x:id="envelope">
+					<EnvelopePoint value="0.28205128205128204843532557788421399891376495361328"/>
+				</Attributes>
+				<TempoMapSegment curveType="0" start="0" end="1.7976931348623156386368421785227527018228425601508e+200"
+				                 tempo="0.5"/>
+			</TempoMap>
+			<TimeSignatureMap x:id="timeSignatureMap">
+				<TimeSignatureMapSegment start="0" numerator="4" denominator="4" type="0"/>
+			</TimeSignatureMap>
+			<KeySignatureMap x:id="keySignatureMap">
+				<Attributes root="0" scale="" start="0" anchor="1"/>
+			</KeySignatureMap>
+			<TimeZoneMap x:id="timeZoneMap">
+				<TimeZone start="0" end="295.16000000000002501110429875552654266357421875" name=""/>
+			</TimeZoneMap>
+		</Attributes>
+		<Attributes x:id="attributes" recordResolution="32"/>
+		<List x:id="Tracks">
+			<MarkerTrack version="1" trackID="{F1BC87F6-C3F5-453D-8645-62CA6B95136E}" timeFormat="2">
+				<Attributes x:id="attributes" height="28"/>
+				<MarkerEvent markerStop="0" markerType="2" start="4.32000000000000028421709430404007434844970703125"
+				             timeFormat="2" name="Start"/>
+				<MarkerEvent markerStop="0" markerType="3" start="558.3200000000000500222085975110530853271484375"
+				             timeFormat="2" name="End"/>
+			</MarkerTrack>
+			<ChordTrack version="1" timeFormat="2" color="FFAB641A" followEnabled="1" trackPlaybackEnabled="0"
+			            chordAuditionEnabled="1" playbackOctave="5" playbackVelocity="0.800000011920928955078125"
+			            chordDisplayMode="1" chordDisplayStyle="1">
+				<Attributes x:id="attributes" hidden="1"/>
+				<UID x:id="channelID" uid="{87E4C3BE-602E-4DA3-8C9B-FC25665B9C6F}"/>
+			</ChordTrack>
+			<ArrangerTrack version="1" timeFormat="2" color="FF8A6B32">
+				<Attributes x:id="attributes" hidden="1"/>
+			</ArrangerTrack>
+			<LyricsTrack version="1" trackID="{4948A71D-5A4C-43F8-8BE8-BCA86DE8AEC9}" timeFormat="2">
+				<Attributes x:id="attributes" hidden="1"/>
+				<Attributes x:id="lyrics">
+				</Attributes>
+			</LyricsTrack>
+			<VideoTrack version="1" timeFormat="0" name="Video" color="FFB89246">
+				<Attributes x:id="attributes" hidden="1"/>
+			</VideoTrack>
+			<MediaTrack mediaType="Audio" tempoFollow="2" materialMode="0" trackNumber="1" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{B2102A16-1A5F-4726-937F-0C199673F82C}"
+			            timeFormat="2" name="Vocals" color="FFFF2D1E">
+				<SpeakerSetup x:id="trackFormat" type="Stereo"/>
+				<UID x:id="channelID" uid="{2BE566C8-62C6-4A8C-BF3F-FF937668701B}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+					<AutomationRegion title="Volume" identity="param:///AudioMixer/{2BE566C8-62C6-4A8C-BF3F-FF937668701B}/volume"
+					                  metaIdentity="AudioTrackChannel/volume" userRenamed="0"
+					                  color="FFFFD829" mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/Vocals/Volume.envelopex"/>
+					</AutomationRegion>
+					<AutomationRegion title="Pan L/R" identity="param:///AudioMixer/{2BE566C8-62C6-4A8C-BF3F-FF937668701B}/Panner/panX1"
+					                  metaIdentity="AudioPanner/panX1" userRenamed="0" color="FFC7FF3A"
+					                  mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/Vocals/Pan L_R.envelopex"/>
+					</AutomationRegion>
+				</Attributes>
+				<Attributes x:id="attributes" height="60"/>
+			</MediaTrack>
+			<MediaTrack mediaType="Audio" tempoFollow="2" materialMode="0" trackNumber="2" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{A3564095-71E6-4002-AD72-1E63E44CA6BF}"
+			            timeFormat="2" name="Vocals 2" color="FFFF2D1E">
+				<SpeakerSetup x:id="trackFormat" type="Stereo"/>
+				<UID x:id="channelID" uid="{8515C896-AED4-4622-BA8B-D0B10E95C8FD}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+					<AutomationRegion title="Volume" identity="param:///AudioMixer/{8515C896-AED4-4622-BA8B-D0B10E95C8FD}/volume"
+					                  metaIdentity="AudioTrackChannel/volume" userRenamed="0"
+					                  color="FFFFD829" mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/Vocals 2/Volume.envelopex"/>
+					</AutomationRegion>
+					<AutomationRegion title="Pan L/R" identity="param:///AudioMixer/{8515C896-AED4-4622-BA8B-D0B10E95C8FD}/Panner/panX1"
+					                  metaIdentity="AudioPanner/panX1" userRenamed="0" color="FFC7FF3A"
+					                  mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/Vocals 2/Pan L_R.envelopex"/>
+					</AutomationRegion>
+				</Attributes>
+			</MediaTrack>
+			<MediaTrack mediaType="Audio" tempoFollow="2" materialMode="0" trackNumber="3" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{E250ADB3-6535-4096-8765-2093EF99BB53}"
+			            timeFormat="2" name="Backing Vocals 2" color="FFFFAD2A">
+				<SpeakerSetup x:id="trackFormat" type="Stereo"/>
+				<UID x:id="channelID" uid="{8F99F593-BABD-41BF-B266-471D7DF7A228}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+					<AutomationRegion title="Volume" identity="param:///AudioMixer/{8F99F593-BABD-41BF-B266-471D7DF7A228}/volume"
+					                  metaIdentity="AudioTrackChannel/volume" userRenamed="0"
+					                  color="FFFFD829" mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/Backing Vocals 2/Volume.envelopex"/>
+					</AutomationRegion>
+					<AutomationRegion title="Pan L/R" identity="param:///AudioMixer/{8F99F593-BABD-41BF-B266-471D7DF7A228}/Panner/panX1"
+					                  metaIdentity="AudioPanner/panX1" userRenamed="0" color="FFC7FF3A"
+					                  mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/Backing Vocals 2/Pan L_R.envelopex"/>
+					</AutomationRegion>
+				</Attributes>
+				<Attributes x:id="attributes" height="60"/>
+			</MediaTrack>
+			<MediaTrack mediaType="Audio" tempoFollow="2" materialMode="0" trackNumber="4" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{FBA7D37A-A1F9-402A-95DD-75DEC4D036CF}"
+			            timeFormat="2" name="4 Guitar" color="FF2AFC38">
+				<SpeakerSetup x:id="trackFormat" type="Stereo"/>
+				<UID x:id="channelID" uid="{13700531-7500-4ED8-8D89-92A1BB65D9B4}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+					<AutomationRegion title="Volume" identity="param:///AudioMixer/{13700531-7500-4ED8-8D89-92A1BB65D9B4}/volume"
+					                  metaIdentity="AudioTrackChannel/volume" userRenamed="0"
+					                  color="FFFFD829" mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/4 Guitar/Volume.envelopex"/>
+					</AutomationRegion>
+					<AutomationRegion title="Pan L/R" identity="param:///AudioMixer/{13700531-7500-4ED8-8D89-92A1BB65D9B4}/Panner/panX1"
+					                  metaIdentity="AudioPanner/panX1" userRenamed="0" color="FFC7FF3A"
+					                  mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/4 Guitar/Pan L_R.envelopex"/>
+					</AutomationRegion>
+				</Attributes>
+			</MediaTrack>
+			<MediaTrack mediaType="Audio" tempoFollow="2" materialMode="0" trackNumber="5" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{41C70F58-D5BA-4BB6-B67C-736561B0E9CD}"
+			            timeFormat="2" name="E Guitar 2" color="FFFFF33A">
+				<SpeakerSetup x:id="trackFormat" type="Stereo"/>
+				<UID x:id="channelID" uid="{287D91EF-7EBF-47C3-9711-6A13737D5BDB}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+					<AutomationRegion title="Volume" identity="param:///AudioMixer/{287D91EF-7EBF-47C3-9711-6A13737D5BDB}/volume"
+					                  metaIdentity="AudioTrackChannel/volume" userRenamed="0"
+					                  color="FFFFD829" mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/E Guitar 2/Volume.envelopex"/>
+					</AutomationRegion>
+					<AutomationRegion title="Pan L/R" identity="param:///AudioMixer/{287D91EF-7EBF-47C3-9711-6A13737D5BDB}/Panner/panX1"
+					                  metaIdentity="AudioPanner/panX1" userRenamed="0" color="FFC7FF3A"
+					                  mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/E Guitar 2/Pan L_R.envelopex"/>
+					</AutomationRegion>
+				</Attributes>
+			</MediaTrack>
+			<MediaTrack mediaType="Audio" tempoFollow="2" materialMode="0" trackNumber="6" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{D25FF07E-342C-4032-89FB-9717361BCEC0}"
+			            timeFormat="2" name="Bass" color="FFB2FF2A">
+				<SpeakerSetup x:id="trackFormat" type="Stereo"/>
+				<UID x:id="channelID" uid="{6ADA6B4E-32DF-4E91-B301-662451B2126B}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+					<AutomationRegion title="Volume" identity="param:///AudioMixer/{6ADA6B4E-32DF-4E91-B301-662451B2126B}/volume"
+					                  metaIdentity="AudioTrackChannel/volume" userRenamed="0"
+					                  color="FFFFD829" mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/Bass/Volume.envelopex"/>
+					</AutomationRegion>
+					<AutomationRegion title="Pan L/R" identity="param:///AudioMixer/{6ADA6B4E-32DF-4E91-B301-662451B2126B}/Panner/panX1"
+					                  metaIdentity="AudioPanner/panX1" userRenamed="0" color="FFC7FF3A"
+					                  mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/Bass/Pan L_R.envelopex"/>
+					</AutomationRegion>
+				</Attributes>
+				<Attributes x:id="attributes" height="60"/>
+			</MediaTrack>
+			<MediaTrack mediaType="Audio" tempoFollow="2" materialMode="0" trackNumber="7" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{A04C6735-6377-4166-B304-17B60DF74896}"
+			            timeFormat="2" mute="1" name="Synth" color="FFFF5E2A">
+				<SpeakerSetup x:id="trackFormat" type="Stereo"/>
+				<UID x:id="channelID" uid="{0DD9BBC7-74EA-42E8-8A95-3856254377F1}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+					<AutomationRegion title="Volume" identity="param:///AudioMixer/{0DD9BBC7-74EA-42E8-8A95-3856254377F1}/volume"
+					                  metaIdentity="AudioTrackChannel/volume" userRenamed="0"
+					                  color="FFFFD829" mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/Synth/Volume.envelopex"/>
+					</AutomationRegion>
+					<AutomationRegion title="Pan L/R" identity="param:///AudioMixer/{0DD9BBC7-74EA-42E8-8A95-3856254377F1}/Panner/panX1"
+					                  metaIdentity="AudioPanner/panX1" userRenamed="0" color="FFC7FF3A"
+					                  mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/Synth/Pan L_R.envelopex"/>
+					</AutomationRegion>
+				</Attributes>
+			</MediaTrack>
+			<MediaTrack mediaType="Audio" tempoFollow="2" materialMode="0" trackNumber="8" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{5F2D79E3-6C04-46CA-B604-D037C577FFA4}"
+			            timeFormat="2" name="Other" color="FFFFAD2A">
+				<SpeakerSetup x:id="trackFormat" type="Stereo"/>
+				<UID x:id="channelID" uid="{AF49A5A7-19F0-4DEA-8686-9E9B63CEAD1E}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+					<AutomationRegion title="Volume" identity="param:///AudioMixer/{AF49A5A7-19F0-4DEA-8686-9E9B63CEAD1E}/volume"
+					                  metaIdentity="AudioTrackChannel/volume" userRenamed="0"
+					                  color="FFFFD829" mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/Other/Volume.envelopex"/>
+					</AutomationRegion>
+					<AutomationRegion title="Pan L/R" identity="param:///AudioMixer/{AF49A5A7-19F0-4DEA-8686-9E9B63CEAD1E}/Panner/panX1"
+					                  metaIdentity="AudioPanner/panX1" userRenamed="0" color="FFC7FF3A"
+					                  mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/Other/Pan L_R.envelopex"/>
+					</AutomationRegion>
+				</Attributes>
+			</MediaTrack>
+			<FolderTrack version="1" trackID="{1E50379B-E9BD-41E3-9B5F-A081B383570C}" timeFormat="2" name="drums"
+			             color="FFFFAD2A">
+				<Attributes x:id="AutomationRegionList" visible="0">
+				</Attributes>
+				<Attributes x:id="attributes" height="60" expanded="1"/>
+			</FolderTrack>
+			<MediaTrack mediaType="Music" tempoFollow="2" materialMode="0" trackNumber="9" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{E8518E1A-87A6-4B54-9FB2-5CDAD3942F4A}"
+			            parentFolder="{1E50379B-E9BD-41E3-9B5F-A081B383570C}" timeFormat="2" name="crash"
+			            color="FFFFF33A">
+				<UID x:id="channelID" uid="{9C7C15B4-0521-47F8-81DC-ABC04C283FED}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+				</Attributes>
+				<Attributes x:id="attributes" drumMode="1" scoreVersion="1"/>
+			</MediaTrack>
+			<MediaTrack mediaType="Music" tempoFollow="2" materialMode="0" trackNumber="10" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{4144611A-99F3-44D3-BECA-B3A7930E4F81}"
+			            parentFolder="{1E50379B-E9BD-41E3-9B5F-A081B383570C}" timeFormat="2" name="Hihat"
+			            color="FF54FC1D">
+				<UID x:id="channelID" uid="{86D1CF38-0AEA-4E4F-BB16-9A753753C793}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+				</Attributes>
+				<Attributes x:id="attributes" drumMode="1" scoreVersion="1"/>
+			</MediaTrack>
+			<MediaTrack mediaType="Music" tempoFollow="2" materialMode="0" trackNumber="11" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{69281290-7220-4A0B-B42F-269A72024D63}"
+			            parentFolder="{1E50379B-E9BD-41E3-9B5F-A081B383570C}" timeFormat="2" name="Kick"
+			            color="FFFFAD2A">
+				<UID x:id="channelID" uid="{639655DE-019F-4992-956F-26850A38837F}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+				</Attributes>
+				<Attributes x:id="attributes" drumMode="1" scoreVersion="1" height="60"/>
+			</MediaTrack>
+			<MediaTrack mediaType="Music" tempoFollow="2" materialMode="0" trackNumber="12" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{B7FDC2EC-A213-4ABC-92EB-59A776FACE8A}"
+			            parentFolder="{1E50379B-E9BD-41E3-9B5F-A081B383570C}" timeFormat="2" name="Ride"
+			            color="FFB2FF2A">
+				<UID x:id="channelID" uid="{7AF64CBA-27E9-4B35-B578-90A100F5E996}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+				</Attributes>
+				<Attributes x:id="attributes" drumMode="1" scoreVersion="1"/>
+			</MediaTrack>
+			<MediaTrack mediaType="Music" tempoFollow="2" materialMode="0" trackNumber="13" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{3438FAA2-972A-481F-94BE-E3A1754928FD}"
+			            parentFolder="{1E50379B-E9BD-41E3-9B5F-A081B383570C}" timeFormat="2" name="Snare"
+			            color="FFFF5E2A">
+				<UID x:id="channelID" uid="{EED0838A-0A6D-47E1-AD1C-C2BA86388724}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+				</Attributes>
+				<Attributes x:id="attributes" drumMode="1" scoreVersion="1" height="60" scoreMode="0" drumScaleCenter="3"
+				            drumScaleZoom="16" pitchScaleCenter="41" pitchScaleZoom="8" timeZoom="0.0050000000000000001040834085586084256647154688835144"
+				            timeOffset="148.501562500001881517164292745292186737060546875"/>
+			</MediaTrack>
+			<MediaTrack mediaType="Music" tempoFollow="2" materialMode="0" trackNumber="14" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{226C5DB9-0F82-43B2-BF7F-19534AE17F6F}"
+			            parentFolder="{1E50379B-E9BD-41E3-9B5F-A081B383570C}" timeFormat="2" name="toms"
+			            color="FFFFF33A">
+				<UID x:id="channelID" uid="{F7E9B4A4-5AA0-4632-A343-B6E80FA28C65}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+				</Attributes>
+				<Attributes x:id="attributes" drumMode="1" scoreVersion="1"/>
+			</MediaTrack>
+			<MediaTrack mediaType="Audio" tempoFollow="2" materialMode="0" trackNumber="15" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{BF35DFEB-1385-4EF7-ADD9-18037F590CFE}"
+			            timeFormat="2" name="1_2 Drums_(Hh)" color="FF2AFF94">
+				<SpeakerSetup x:id="trackFormat" type="Stereo"/>
+				<UID x:id="channelID" uid="{2473D515-6111-4F46-9000-BECC5FCB29DF}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+					<AutomationRegion title="Volume" identity="param:///AudioMixer/{2473D515-6111-4F46-9000-BECC5FCB29DF}/volume"
+					                  metaIdentity="AudioTrackChannel/volume" userRenamed="0"
+					                  color="FFFFD829" mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/1_2 Drums_(Hh)/Volume.envelopex"/>
+					</AutomationRegion>
+					<AutomationRegion title="Pan L/R" identity="param:///AudioMixer/{2473D515-6111-4F46-9000-BECC5FCB29DF}/Panner/panX1"
+					                  metaIdentity="AudioPanner/panX1" userRenamed="0" color="FFC7FF3A"
+					                  mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/1_2 Drums_(Hh)/Pan L_R.envelopex"/>
+					</AutomationRegion>
+				</Attributes>
+			</MediaTrack>
+			<MediaTrack mediaType="Audio" tempoFollow="2" materialMode="0" trackNumber="16" layersFollow="0" followLayerName="0"
+			            followGlobalTransposition="0" version="1" trackID="{593BFCD8-5FF0-41DD-AAA4-F5110AF44F0C}"
+			            timeFormat="2" name="7 Other" color="FF2AFFE5">
+				<SpeakerSetup x:id="trackFormat" type="Stereo"/>
+				<UID x:id="channelID" uid="{94F7A958-DF3A-4C66-876A-0CD5A8263C1D}"/>
+				<Attributes x:id="AutomationRegionList" visible="0">
+					<AutomationRegion title="Volume" identity="param:///AudioMixer/{94F7A958-DF3A-4C66-876A-0CD5A8263C1D}/volume"
+					                  metaIdentity="AudioTrackChannel/volume" userRenamed="0"
+					                  color="FFFFD829" mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/7 Other/Volume.envelopex"/>
+					</AutomationRegion>
+					<AutomationRegion title="Pan L/R" identity="param:///AudioMixer/{94F7A958-DF3A-4C66-876A-0CD5A8263C1D}/Panner/panX1"
+					                  metaIdentity="AudioPanner/panX1" userRenamed="0" color="FFC7FF3A"
+					                  mute="0">
+						<Url x:id="points" type="1" url="media:///Envelopes/7 Other/Pan L_R.envelopex"/>
+					</AutomationRegion>
+				</Attributes>
+			</MediaTrack>
+		</List>
+	</Attributes>
+</Song>

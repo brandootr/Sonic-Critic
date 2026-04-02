@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<NotepadData>
+	<NotepadItem id="{D201E276-D8DB-4AAD-B715-C27DBF8C1F80}" title="Input L+R" text=""/>
+	<NotepadItem id="{0A305BD5-E232-4ECA-BF14-A458FCFE3FF0}" title="Input L" text=""/>
+	<NotepadItem id="{B98DF3BA-874B-44DF-B295-E40D84A00F24}" title="Input R" text=""/>
+	<NotepadItem id="{48499A88-C738-4EA0-A1B0-8A95F6F2F35E}" title="Main" text=""/>
+	<NotepadItem id="{61E81A8B-4F47-4CE4-884E-3F8C2210DFDB}" title="1 MT-PowerDrumKit" text=""/>
+	<NotepadItem id="{3A1A4A53-53A1-43D7-8764-6A9E5CCA7256}" title="Snare Reverb" text=""/>
+	<NotepadItem id="{7CAF229E-02F7-4B82-83EC-78CCE30C4015}" title="Vocals" text=""/>
+	<NotepadItem id="{FB2C1423-464A-4644-A559-ABEA805303D8}" title="Delay" text=""/>
+	<NotepadItem id="{F4272723-B4CB-45B7-AA32-FE3C81017D53}" title="Reverb" text=""/>
+	<NotepadItem id="{E3D25AFD-D215-4452-8175-893573547ACD}" title="Wide" text=""/>
+	<NotepadItem id="{6A260B74-EA61-42E3-9BD7-4A8D66E63173}" title="snare crash" text=""/>
+	<NotepadItem id="{B2102A16-1A5F-4726-937F-0C199673F82C}" title="Vocals" text=""/>
+	<NotepadItem id="{A3564095-71E6-4002-AD72-1E63E44CA6BF}" title="Vocals 2" text=""/>
+	<NotepadItem id="{E250ADB3-6535-4096-8765-2093EF99BB53}" title="Backing Vocals 2" text=""/>
+	<NotepadItem id="{FBA7D37A-A1F9-402A-95DD-75DEC4D036CF}" title="4 Guitar" text=""/>
+	<NotepadItem id="{41C70F58-D5BA-4BB6-B67C-736561B0E9CD}" title="E Guitar 2" text=""/>
+	<NotepadItem id="{D25FF07E-342C-4032-89FB-9717361BCEC0}" title="Bass" text=""/>
+	<NotepadItem id="{A04C6735-6377-4166-B304-17B60DF74896}" title="Synth" text=""/>
+	<NotepadItem id="{5F2D79E3-6C04-46CA-B604-D037C577FFA4}" title="Other" text=""/>
+	<NotepadItem id="{BF35DFEB-1385-4EF7-ADD9-18037F590CFE}" title="1_2 Drums_(Hh)" text=""/>
+	<NotepadItem id="{593BFCD8-5FF0-41DD-AAA4-F5110AF44F0C}" title="7 Other" text=""/>
+	<NotepadItem id="{E8518E1A-87A6-4B54-9FB2-5CDAD3942F4A}" title="crash" text=""/>
+	<NotepadItem id="{4144611A-99F3-44D3-BECA-B3A7930E4F81}" title="Hihat" text=""/>
+	<NotepadItem id="{69281290-7220-4A0B-B42F-269A72024D63}" title="Kick" text=""/>
+	<NotepadItem id="{B7FDC2EC-A213-4ABC-92EB-59A776FACE8A}" title="Ride" text=""/>
+	<NotepadItem id="{3438FAA2-972A-481F-94BE-E3A1754928FD}" title="Snare" text=""/>
+	<NotepadItem id="{226C5DB9-0F82-43B2-BF7F-19534AE17F6F}" title="toms" text=""/>
+	<NotepadItem id="{1E50379B-E9BD-41E3-9B5F-A081B383570C}" title="drums" text=""/>
+</NotepadData>
