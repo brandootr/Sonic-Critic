@@ -2,7 +2,7 @@ import { GoogleGenAI, Type, Chat, ThinkingLevel } from "@google/genai";
 import { CritiqueResult, SessionPrediction } from "../types";
 
 const USER_VST_LIBRARY = `
-4Front Piano x64.vst, Attracktive.vst3, Bertom_DenoiserClassic.vst3, DelaySon.vst3, Proteus.vst3, TAL-Chorus-LX.vst3, Vastaus.vst3, ACE Bridge 2.vst3, ACE Bridge ARA.vst3, ACE Bridge.vst3, Amped - Block Letter.vst3, Amped - Fluff 2C.vst3, Amped - Humble.vst3, Amped - Roots.vst3, Amped - Volcano.vst3, amplistortion2_64bits.vst3, Auburn Sounds Panagement 2-64.vst3, BFDPlayer.vst3, Boogex.vst3, bx_blackdist2.vst3, bx_bluechorus2.vst3, bx_boom.vst3, bx_cleansweep V2.vst3, bx_distorange.vst3, bx_greenscreamer.vst3, bx_masterdesk Classic.vst3, bx_megasingle.vst3, bx_metal2.vst3, bx_meter.vst3, bx_opto Pedal.vst3, bx_rockrack V3 Player.vst3, bx_shredspread.vst3, bx_solo.vst3, bx_subfilter.vst3, bx_subsynth.vst3, bx_tuner.vst3, bx_yellowdrive.vst3, Clear.vst3, CUBE.vst3, elysia niveau filter.vst3, Emissary.vst3, Kontakt 7.vst3, Kontakt 8.vst3, LoudMax.vst3, MLDrums.vst3, MT-PowerDrumKit.vst3, NadIR.vst3, NAM Universal.vst3, PlaceIt.vst3, Puncher2Lite.vst3, RRS EQ560 Free VST3_64.vst3, ShapeIt.vst3, smartEQ3.vst3, SPL Free Ranger.vst3, TDR Nova.vst3, WaveShell1-VST3 16.0_x64.vst3, Youlean Loudness Meter 2.vst3, Melodyne.vst3, Temperance Lite.vst3, Fire.vst3, Insight 2.vst3, kHs Channel Mixer.vst3, kHs Comb Filter.vst3, kHs Delay.vst3, kHs Dual Delay.vst3, kHs Ensemble.vst3, kHs Filter.vst3, kHs Flanger.vst3, kHs Formant Filter.vst3, kHs Frequency Shifter.vst3, kHs Gain.vst3, kHs Pitch Shifter.vst3, kHs Reverb.vst3, kHs Reverser.vst3, kHs Shaper.vst3, kHs Stereo.vst3, kHs Tape Stop.vst3, kHs Trance Gate.vst3, kHs Transient Shaper.vst3, MDelay.vst3, MBitFun.vst3, MSaturator.vst3, MWaveFolder.vst3, MWaveShaper.vst3, MAGC.vst3, MCompressor.vst3, MEqualizer.vst3, MBandPass.vst3, MComb.vst3, MAutopan.vst3, MFlanger.vst3, MFreqShifter.vst3, MPhaser.vst3, MRingModulator.vst3, MTremolo.vst3, MVibrato.vst3, MAutoPitch.vst3, MCharmVerb.vst3, MConvolutionEZ.vst3, MSpectralPan.vst3, MStereoExpander.vst3, MStereoScope.vst3, MAnalyzer.vst3, MCCGenerator.vst3, MChannelMatrix.vst3, MFreeformPhase.vst3, MLoudnessAnalyzer.vst3, MMetronome.vst3, MNoiseGenerator.vst3, MNotepad.vst3, MOscillator.vst3, MOscilloscope.vst3, MRatio.vst3, MRatioMB.vst3, MRecorder.vst3, MTuner.vst3, MUtility.vst3, Chorus.vst3, Compress.vst3, De-Ess.vst3, Delay.vst3, Harmonise.vst3, Master.vst3, NoiseGate.vst3, PitchFix.vst3, ProEQ.vst3, Reverb.vst3, Rotary.vst3, SimpleEQ.vst3, Heatwave.vst3
+4Front Piano x64.vst, Amorph_FX.vst3, Amorph_Instrument.vst3, Amorph_MIDI.vst3, Attracktive.vst3, Bertom_DenoiserClassic.vst3, DelaySon.vst3, Orra Tone Zone.vst3, Prism.vst3, Proteus.vst3, TAL-Chorus-LX.vst3, Vastaus.vst3, ACE Bridge 2.vst3, ACE Bridge ARA.vst3, ACE Bridge.vst3, Amped - Block Letter.vst3, Amped - Fluff 2C.vst3, Amped - Humble.vst3, Amped - Roots.vst3, Amped - Volcano.vst3, amplistortion2_64bits.vst3, ANIMATE.vst3, Auburn Sounds Panagement 2-64.vst3, BASSROOM.vst3, BFDPlayer.vst3, Boogex.vst3, bx_blackdist2.vst3, bx_bluechorus2.vst3, bx_boom.vst3, bx_cleansweep V2.vst3, bx_distorange.vst3, bx_greenscreamer.vst3, bx_masterdesk Classic.vst3, bx_megasingle.vst3, bx_metal2.vst3, bx_meter.vst3, bx_opto Pedal.vst3, bx_rockrack V3 Player.vst3, bx_shredspread.vst3, bx_solo.vst3, bx_subfilter.vst3, bx_subsynth.vst3, bx_tuner.vst3, bx_yellowdrive.vst3, Clear.vst3, CUBE.vst3, elysia niveau filter.vst3, Emissary.vst3, FASTERMASTER.vst3, FUSER.vst3, Kontakt 7.vst3, Kontakt 8.vst3, LEVELS.vst3, LIMITER.vst3, LoudMax.vst3, MIXROOM.vst3, MLDrums.vst3, MT-PowerDrumKit.vst3, NadIR.vst3, NAM Universal.vst3, PanCake 2.vst3, PlaceIt.vst3, Puncher2Lite.vst3, REFERENCE.vst3, REFSEND.vst3, RESO.vst3, RRS EQ560 Free VST3_64.vst3, ShapeIt.vst3, smartEQ3.vst3, SOL.vst3, SongEngine_x64.vst3, SPL Free Ranger.vst3, STL Ignite - AmpHub.vst3, T-De-Esser 2.vst3, TDR Nova.vst3, VG-SPARKLE2.vst3, WaveShell1-VST3 16.0_x64.vst3, Youlean Loudness Meter 2.vst3, ProEQ.vst3, Room Reverb.vst3, Compressor.vst3, Limiter.vst3
 `;
 
 const TRACK_SCHEMA = {
@@ -221,7 +221,7 @@ const getAIClient = () => {
   return new GoogleGenAI({ apiKey });
 };
 
-export const analyzeAudio = async (base64Audio: string, mimeType: string, previousCritique?: CritiqueResult, songXmlContent?: string): Promise<CritiqueResult> => {
+export const analyzeAudio = async (base64Audio: string, mimeType: string, previousCritique?: CritiqueResult, songXmlContent?: string, focusPrompt?: string): Promise<CritiqueResult> => {
   return withRetry(async () => {
     const ai = getAIClient();
 
@@ -235,6 +235,9 @@ export const analyzeAudio = async (base64Audio: string, mimeType: string, previo
     if (previousCritique) {
       systemInstruction += `\nPrevious Score: ${previousCritique.overallScore}. Compare this new version.`;
       prompt = "Compare this revision and update the SessionBlueprint based on remaining issues. Provide specific parameter settings for each plugin.";
+      if (focusPrompt) {
+        prompt += `\n\nUSER'S FOCUS FOR THIS REVISION: "${focusPrompt}"\nEnsure you specifically address this focus area in your critique and suggestions.`;
+      }
     }
 
     const response = await ai.models.generateContent({

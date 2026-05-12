@@ -57,6 +57,8 @@ const App: React.FC = () => {
   const [currentAudioBase64, setCurrentAudioBase64] = useState<string | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isRevisionPromptOpen, setIsRevisionPromptOpen] = useState(false);
+  const [revisionPromptText, setRevisionPromptText] = useState("");
 
   useEffect(() => {
     console.log("App component mounted");
@@ -187,7 +189,17 @@ const App: React.FC = () => {
     return newSession;
   };
 
-  const processAudioFile = useCallback(async (file: File, sessionId: string, prevCritique: CritiqueResult | null, songXml?: string) => {
+  const handleOpenRevisionPrompt = () => {
+    setIsRevisionPromptOpen(true);
+    setRevisionPromptText("");
+  };
+
+  const handleStartRevision = () => {
+    setIsRevisionPromptOpen(false);
+    triggerUpload();
+  };
+
+  const processAudioFile = useCallback(async (file: File, sessionId: string, prevCritique: CritiqueResult | null, songXml?: string, focusPrompt?: string) => {
     try {
       console.log("Starting audio processing for file:", file.name);
       setIsQuotaError(false);
@@ -224,7 +236,7 @@ const App: React.FC = () => {
       setStatus(isComparing ? AnalysisStatus.COMPARING : AnalysisStatus.ANALYZING_AI);
       console.log("Calling Gemini API...");
       
-      const result = await analyzeAudio(base64Audio, file.type, prevCritique || undefined, songXml);
+      const result = await analyzeAudio(base64Audio, file.type, prevCritique || undefined, songXml, focusPrompt);
       console.log("Gemini analysis complete");
       
       setCurrentAudioBase64(base64Audio);
@@ -264,13 +276,16 @@ const App: React.FC = () => {
       let targetId = currentSessionId;
       let prevCritique = latestCritique;
       let existingXml = currentSession?.songXmlContent || pendingXmlContent || undefined;
+      let currentFocusPrompt = revisionPromptText;
 
       if (!targetId) {
         const newSess = createNewSession(file.name);
         targetId = newSess.id;
         prevCritique = null;
+        currentFocusPrompt = "";
       }
-      processAudioFile(file, targetId, prevCritique, existingXml);
+      processAudioFile(file, targetId, prevCritique, existingXml, currentFocusPrompt);
+      setRevisionPromptText(""); // Clear after using
       e.target.value = '';
     }
   };
@@ -504,7 +519,7 @@ const App: React.FC = () => {
               <CritiqueSection 
                 critique={latestCritique} 
                 fileName={currentSession?.latestFileName || 'Track'} 
-                onCompare={triggerUpload} 
+                onCompare={handleOpenRevisionPrompt} 
                 isComparison={currentSession!.critiques.length > 1} 
                 chatHistory={currentSession?.chatHistory}
                 audioBlob={currentAudioBlob || undefined}
@@ -537,6 +552,39 @@ const App: React.FC = () => {
           isOpen={isChatOpen} 
           onClose={() => setIsChatOpen(false)} 
         />
+      )}
+
+      {/* Revision Prompt Modal */}
+      {isRevisionPromptOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => setIsRevisionPromptOpen(false)} />
+          <div className="bg-slate-900 border border-slate-700/50 p-6 rounded-2xl shadow-2xl relative z-10 w-full max-w-md animate-in fade-in zoom-in-95 duration-200">
+            <h3 className="text-xl font-bold text-slate-100 mb-2">Revision Focus</h3>
+            <p className="text-slate-400 text-sm mb-4">What should the AI specifically check in this new version? (e.g., "Are the guitars sounding better?", "Is the vocal loud enough?")</p>
+            <textarea
+              value={revisionPromptText}
+              onChange={(e) => setRevisionPromptText(e.target.value)}
+              placeholder="Enter your focus prompt (optional)"
+              className="w-full bg-slate-800 border-slate-700/50 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-6 resize-none h-24"
+            />
+            <div className="flex justify-end space-x-3">
+              <button
+                type="button"
+                onClick={() => setIsRevisionPromptOpen(false)}
+                className="px-4 py-2 text-sm font-bold text-slate-400 hover:text-slate-200 transition-colors"
+              >
+                CANCEL
+              </button>
+              <button
+                type="button"
+                onClick={handleStartRevision}
+                className="px-4 py-2 text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-colors shadow-lg shadow-indigo-500/20"
+              >
+                SELECT AUDIO FILE
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       <input type="file" ref={globalFileInputRef} onChange={handleFileChange} className="hidden" accept="audio/*" />
