@@ -59,16 +59,34 @@ export interface SessionPrediction {
   reasoning: string;
 }
 
+export interface StemComparisonResult {
+  stemAScore: number;
+  stemAFeedback: string;
+  stemBScore: number;
+  stemBFeedback: string;
+  comparisonSummary: string;
+  winner: string;
+  improvementSuggestions: string[];
+}
+
+export interface StemComparison {
+  stemAName: string;
+  stemBName: string;
+  result?: StemComparisonResult;
+}
+
 export interface Session {
   id: string;
   name: string;
   createdAt: number;
   lastModified: number;
+  sessionType?: 'full_mix' | 'stem_comparison';
   critiques: CritiqueResult[];
   latestFileName: string | null;
   chatHistory?: ChatMessage[];
   songXmlContent?: string;
   prediction?: SessionPrediction;
+  stemComparison?: StemComparison;
 }
 
 export enum AnalysisStatus {

@@ -1,10 +1,11 @@
 
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
-import { AnalysisStatus, CritiqueResult, Session, ChatMessage, SessionPrediction } from './types';
-import { analyzeAudio, createChatSession, predictSessionConfiguration } from './services/geminiService';
+import { AnalysisStatus, CritiqueResult, Session, ChatMessage, SessionPrediction, StemComparisonResult, StemComparison } from './types';
+import { analyzeAudio, createChatSession, predictSessionConfiguration, compareStems } from './services/geminiService';
 import Spectrogram from './components/Spectrogram';
 import CritiqueSection from './components/CritiqueSection';
 import ChatInterface from './components/ChatInterface';
+import StemComparisonSection from './components/StemComparisonSection';
 
 const STORAGE_KEY = 'sonic_critique_sessions';
 const CURRENT_ID_KEY = 'sonic_critique_current_id';
@@ -59,6 +60,13 @@ const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isRevisionPromptOpen, setIsRevisionPromptOpen] = useState(false);
   const [revisionPromptText, setRevisionPromptText] = useState("");
+  
+  const [appMode, setAppMode] = useState<'full_mix' | 'stem_compare'>('full_mix');
+  const [stemAContent, setStemAContent] = useState<{file: File, base64: string} | null>(null);
+  const [stemBContent, setStemBContent] = useState<{file: File, base64: string} | null>(null);
+
+  const stemAInputRef = useRef<HTMLInputElement>(null);
+  const stemBInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     console.log("App component mounted");
@@ -67,6 +75,7 @@ const App: React.FC = () => {
 
   const globalFileInputRef = useRef<HTMLInputElement>(null);
   const songXmlInputRef = useRef<HTMLInputElement>(null);
+  const importFileInputRef = useRef<HTMLInputElement>(null);
 
   const checkKeyStatus = useCallback(async () => {
     try {
@@ -149,12 +158,12 @@ const App: React.FC = () => {
   const chatSession = useMemo(() => {
     if (!latestCritique) return null;
     try {
-      return createChatSession(latestCritique);
+      return createChatSession(latestCritique, currentSession?.chatHistory);
     } catch (e) {
       console.error("Failed to create chat session:", e);
       return null;
     }
-  }, [latestCritique]);
+  }, [latestCritique, currentSession?.id]);
 
   const handleOpenKeySelector = async () => {
     await window.aistudio.openSelectKey();
@@ -192,6 +201,71 @@ const App: React.FC = () => {
   const handleOpenRevisionPrompt = () => {
     setIsRevisionPromptOpen(true);
     setRevisionPromptText("");
+  };
+
+  const handleStemUpload = async (e: React.ChangeEvent<HTMLInputElement>, side: 'A' | 'B') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const arrayBuffer = await file.arrayBuffer();
+    const base64Audio = await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve((reader.result as string).split(',')[1]);
+      };
+      reader.readAsDataURL(new Blob([arrayBuffer]));
+    });
+
+    if (side === 'A') {
+      setStemAContent({ file, base64: base64Audio });
+    } else {
+      setStemBContent({ file, base64: base64Audio });
+    }
+  };
+
+  const processBothStems = async () => {
+    if (!stemAContent || !stemBContent) return;
+    try {
+      setIsQuotaError(false);
+      setStatus(AnalysisStatus.COMPARING);
+
+      const result = await compareStems(
+        stemAContent.base64, stemAContent.file.type, stemAContent.file.name,
+        stemBContent.base64, stemBContent.file.type, stemBContent.file.name
+      );
+
+      const stemAName = stemAContent.file.name;
+      const stemBName = stemBContent.file.name;
+
+      const newSession: Session = {
+        id: generateId(),
+        name: `Stems: ${stemAName} vs ${stemBName}`,
+        createdAt: Date.now(),
+        lastModified: Date.now(),
+        sessionType: 'stem_comparison',
+        critiques: [], // Not used for stems
+        latestFileName: null,
+        stemComparison: {
+          stemAName,
+          stemBName,
+          result
+        }
+      };
+      setSessions(prev => [newSession, ...prev]);
+      setCurrentSessionId(newSession.id);
+      setStatus(AnalysisStatus.SUCCESS);
+      setStemAContent(null);
+      setStemBContent(null);
+    } catch (err: any) {
+      console.error("Stem Comparison Error:", err);
+      if (err.message?.includes("Requested entity was not found.")) {
+        setHasCustomKey(false);
+        window.aistudio.openSelectKey().then(() => setHasCustomKey(true));
+      }
+      setIsQuotaError(err.message?.includes('429') || err.message?.toLowerCase().includes('quota'));
+      setError(err.message || "An error occurred during comparison.");
+      setStatus(AnalysisStatus.ERROR);
+    }
   };
 
   const handleStartRevision = () => {
@@ -324,6 +398,78 @@ const App: React.FC = () => {
     }
   };
 
+  const renameSession = (e: React.MouseEvent, id: string, name: string) => {
+    e.stopPropagation(); e.preventDefault();
+    const newName = window.prompt("Rename Mix Project:", name);
+    if (newName && newName.trim()) {
+      setSessions(prev => prev.map(s => {
+        if (s.id === id) {
+          return { ...s, name: newName.trim(), lastModified: Date.now() };
+        }
+        return s;
+      }));
+    }
+  };
+
+  const exportSession = (e: React.MouseEvent, s: Session) => {
+    e.stopPropagation(); e.preventDefault();
+    try {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(s, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      const safeName = s.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      downloadAnchor.setAttribute("download", `sonic-critique-${safeName}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.removeChild(downloadAnchor);
+    } catch (err) {
+      console.error("Export failed", err);
+      alert("Failed to export critique project file.");
+    }
+  };
+
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+
+      if (!parsed.id || !parsed.name || !Array.isArray(parsed.critiques)) {
+        throw new Error("Invalid critique file format. Must be a valid SonicCritique AI project JSON.");
+      }
+
+      const exists = sessions.some(s => s.id === parsed.id);
+      let sessionToLoad = { ...parsed };
+      
+      if (exists) {
+        if (window.confirm("A project with this ID is already loaded. Would you like to import it as a new copy?")) {
+          sessionToLoad.id = generateId();
+          sessionToLoad.name = `${parsed.name} (Copy)`;
+        } else {
+          // Overwrite existing in the list
+          setSessions(prev => prev.map(s => s.id === parsed.id ? sessionToLoad : s));
+          setCurrentSessionId(parsed.id);
+          setStatus((sessionToLoad.critiques && sessionToLoad.critiques.length > 0) || sessionToLoad.stemComparison ? AnalysisStatus.SUCCESS : AnalysisStatus.IDLE);
+          e.target.value = '';
+          return;
+        }
+      }
+
+      setSessions(prev => [sessionToLoad, ...prev]);
+      setCurrentSessionId(sessionToLoad.id);
+      setStatus((sessionToLoad.critiques && sessionToLoad.critiques.length > 0) || sessionToLoad.stemComparison ? AnalysisStatus.SUCCESS : AnalysisStatus.IDLE);
+    } catch (err: any) {
+      console.error("Import failed", err);
+      alert(`Failed to load critique file: ${err.message || "Invalid JSON format."}`);
+    } finally {
+      e.target.value = '';
+    }
+  };
+
+  const triggerImportClick = () => importFileInputRef.current?.click();
+
   const startNewProject = () => {
     setCurrentSessionId(null);
     setStatus(AnalysisStatus.IDLE);
@@ -382,9 +528,16 @@ const App: React.FC = () => {
       <aside className={`bg-slate-900/80 backdrop-blur-xl border-r border-slate-800 transition-all duration-300 flex flex-col z-40 ${isSidebarOpen ? 'w-72' : 'w-0 overflow-hidden'}`}>
         <div className="p-6 border-b border-slate-800 flex items-center justify-between whitespace-nowrap">
           <h2 className="font-bold text-slate-400 text-xs tracking-widest uppercase">Mix Projects</h2>
-          <button type="button" onClick={startNewProject} className="p-2 hover:bg-slate-800 rounded-lg text-indigo-400 transition-colors" title="New Project">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-          </button>
+          <div className="flex items-center space-x-1">
+            <button type="button" onClick={triggerImportClick} className="p-2 hover:bg-slate-800 rounded-lg text-emerald-400 transition-colors animate-pulse" title="Load Project from File">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+            </button>
+            <button type="button" onClick={startNewProject} className="p-2 hover:bg-slate-800 rounded-lg text-indigo-400 transition-colors" title="New Project">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+            </button>
+          </div>
         </div>
         
         <div className="flex-1 overflow-y-auto py-4">
@@ -393,7 +546,7 @@ const App: React.FC = () => {
               key={s.id}
               onClick={() => {
                 setCurrentSessionId(s.id);
-                setStatus(s.critiques.length > 0 ? AnalysisStatus.SUCCESS : AnalysisStatus.IDLE);
+                setStatus((s.critiques && s.critiques.length > 0) || s.stemComparison ? AnalysisStatus.SUCCESS : AnalysisStatus.IDLE);
                 setAudioBuffer(null);
               }}
               className={`px-6 py-4 cursor-pointer border-l-4 transition-all hover:bg-slate-800/50 group flex items-center justify-between ${currentSessionId === s.id ? 'bg-indigo-600/10 border-indigo-500' : 'border-transparent'}`}
@@ -403,18 +556,41 @@ const App: React.FC = () => {
                 <div className="text-[10px] text-slate-500 flex items-center mt-1">
                   <span>{new Date(s.lastModified).toLocaleDateString()}</span>
                   <span className="mx-2">•</span>
-                  <span>{s.critiques.length} revs</span>
+                  <span>{s.critiques?.length || 0} revs</span>
                 </div>
               </div>
-              <button 
-                type="button"
-                onClick={(e) => deleteSession(e, s.id)}
-                className="opacity-0 group-hover:opacity-40 hover:!opacity-100 p-1.5 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
+              <div className="flex items-center space-x-1 whitespace-nowrap">
+                <button 
+                  type="button"
+                  onClick={(e) => renameSession(e, s.id, s.name)}
+                  className="opacity-0 group-hover:opacity-40 hover:!opacity-100 p-1 hover:text-indigo-400 hover:bg-indigo-400/10 rounded-lg transition-all"
+                  title="Rename Project"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </button>
+                <button 
+                  type="button"
+                  onClick={(e) => exportSession(e, s)}
+                  className="opacity-0 group-hover:opacity-40 hover:!opacity-100 p-1 hover:text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-all"
+                  title="Save/Export Project File"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                </button>
+                <button 
+                  type="button"
+                  onClick={(e) => deleteSession(e, s.id)}
+                  className="opacity-0 group-hover:opacity-40 hover:!opacity-100 p-1.5 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+                  title="Delete Project"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -470,35 +646,88 @@ const App: React.FC = () => {
         <main className="flex-1 max-w-7xl mx-auto px-6 py-12 w-full">
           {status === AnalysisStatus.IDLE && (
             <div className="max-w-4xl mx-auto text-center space-y-12 py-12">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div 
-                  onClick={triggerXmlUpload} 
-                  className={`group cursor-pointer p-10 rounded-3xl border-2 border-dashed transition-all duration-300 ${pendingXmlContent ? 'border-emerald-500/50 bg-emerald-900/20' : 'border-slate-800 bg-slate-900/30 hover:bg-slate-900/50 hover:border-indigo-500/50'}`}
-                >
-                  <div className="flex flex-col items-center">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors ${pendingXmlContent ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400 group-hover:bg-indigo-600 group-hover:text-white'}`}>
-                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                    </div>
-                    <h3 className="text-lg font-bold mb-1">{pendingXmlContent ? 'XML Loaded' : 'Attach song.xml'}</h3>
-                    <p className="text-slate-500 text-sm">Optional: Provide project context first</p>
-                  </div>
-                </div>
 
-                <div onClick={triggerUpload} className="group cursor-pointer p-10 rounded-3xl border-2 border-dashed border-slate-800 bg-slate-900/30 hover:bg-slate-900/50 hover:border-indigo-500/50 transition-all duration-300">
-                  <div className="flex flex-col items-center">
-                    <div className="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 transition-colors text-indigo-400 group-hover:text-white">
-                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
-                    </div>
-                    <h3 className="text-lg font-bold mb-1">Upload Audio</h3>
-                    <p className="text-slate-500 text-sm">Analyze and generate session</p>
-                  </div>
-                </div>
+              {/* Mode Switcher */}
+              <div className="flex justify-center space-x-4 mb-8">
+                <button 
+                  onClick={() => setAppMode('full_mix')}
+                  className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${appMode === 'full_mix' ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+                >
+                  Full Mix Critique
+                </button>
+                <button 
+                  onClick={() => setAppMode('stem_compare')}
+                  className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${appMode === 'stem_compare' ? 'bg-emerald-600 text-white shadow-lg' : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+                >
+                  Stem Comparison
+                </button>
               </div>
 
+              {appMode === 'full_mix' ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div 
+                    onClick={triggerXmlUpload} 
+                    className={`group cursor-pointer p-10 rounded-3xl border-2 border-dashed transition-all duration-300 ${pendingXmlContent ? 'border-emerald-500/50 bg-emerald-900/20' : 'border-slate-800 bg-slate-900/30 hover:bg-slate-900/50 hover:border-indigo-500/50'}`}
+                  >
+                    <div className="flex flex-col items-center">
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors ${pendingXmlContent ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400 group-hover:bg-indigo-600 group-hover:text-white'}`}>
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-bold mb-1">{pendingXmlContent ? 'XML Loaded' : 'Attach song.xml'}</h3>
+                      <p className="text-slate-500 text-sm">Optional: Provide project context first</p>
+                    </div>
+                  </div>
+
+                  <div onClick={triggerUpload} className="group cursor-pointer p-10 rounded-3xl border-2 border-dashed border-slate-800 bg-slate-900/30 hover:bg-slate-900/50 hover:border-indigo-500/50 transition-all duration-300">
+                    <div className="flex flex-col items-center">
+                      <div className="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 transition-colors text-indigo-400 group-hover:text-white">
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                      </div>
+                      <h3 className="text-lg font-bold mb-1">Upload Audio</h3>
+                      <p className="text-slate-500 text-sm">Analyze and generate session</p>
+                    </div>
+                  </div>
+
+                  <div onClick={triggerImportClick} className="group cursor-pointer p-10 rounded-3xl border-2 border-dashed border-slate-800 bg-slate-900/30 hover:bg-slate-900/50 hover:border-emerald-500/50 transition-all duration-300">
+                    <div className="flex flex-col items-center">
+                      <div className="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center mb-4 group-hover:bg-emerald-600 transition-colors text-emerald-400 group-hover:text-white">
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-bold mb-1">Load Critique</h3>
+                      <p className="text-slate-500 text-sm">Restore previous analysis & chat</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-8 animate-in fade-in">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div onClick={() => stemAInputRef.current?.click()} className={`group cursor-pointer p-8 rounded-3xl border-2 border-dashed ${stemAContent ? 'border-emerald-500/50 bg-emerald-900/20' : 'border-slate-800 bg-slate-900/30 hover:bg-slate-900/50'} transition-all duration-300`}>
+                      <h3 className="text-lg font-bold mb-1">Stem A</h3>
+                      {stemAContent ? <p className="text-emerald-400 text-sm">{stemAContent.file.name}</p> : <p className="text-slate-500 text-sm">Upload first version</p>}
+                    </div>
+                    <div onClick={() => stemBInputRef.current?.click()} className={`group cursor-pointer p-8 rounded-3xl border-2 border-dashed ${stemBContent ? 'border-emerald-500/50 bg-emerald-900/20' : 'border-slate-800 bg-slate-900/30 hover:bg-slate-900/50'} transition-all duration-300`}>
+                      <h3 className="text-lg font-bold mb-1">Stem B</h3>
+                      {stemBContent ? <p className="text-emerald-400 text-sm">{stemBContent.file.name}</p> : <p className="text-slate-500 text-sm">Upload second version</p>}
+                    </div>
+                  </div>
+                  <button 
+                    onClick={processBothStems}
+                    disabled={!stemAContent || !stemBContent}
+                    className="px-8 py-3 bg-gradient-to-r from-emerald-600 to-teal-500 text-white rounded-xl shadow-lg font-bold disabled:opacity-50 transition-all hover:scale-105 active:scale-95"
+                  >
+                    Compare Stems
+                  </button>
+                </div>
+              )}
+
               <div className="pt-8">
-                <p className="text-slate-500 italic text-sm">"The AI Engineer analyzes your mix and provides a Studio One blueprint"</p>
+                <p className="text-slate-500 italic text-sm">
+                  {appMode === 'full_mix' ? '"The AI Engineer analyzes your mix and provides a Studio One blueprint"' : '"Deep thinking comparison for individual instrument changes"'}
+                </p>
               </div>
             </div>
           )}
@@ -514,7 +743,15 @@ const App: React.FC = () => {
             </div>
           )}
 
-          {status === AnalysisStatus.SUCCESS && latestCritique && (
+          {status === AnalysisStatus.SUCCESS && currentSession && currentSession.sessionType === 'stem_comparison' && currentSession.stemComparison?.result && (
+            <StemComparisonSection 
+              comparison={currentSession.stemComparison.result} 
+              stemAName={currentSession.stemComparison.stemAName}
+              stemBName={currentSession.stemComparison.stemBName}
+            />
+          )}
+
+          {status === AnalysisStatus.SUCCESS && latestCritique && currentSession?.sessionType !== 'stem_comparison' && (
             <div id="analysis-report-container" className="space-y-12 animate-in fade-in duration-700">
               <CritiqueSection 
                 critique={latestCritique} 
@@ -589,6 +826,9 @@ const App: React.FC = () => {
 
       <input type="file" ref={globalFileInputRef} onChange={handleFileChange} className="hidden" accept="audio/*" />
       <input type="file" ref={songXmlInputRef} onChange={handleXmlChange} className="hidden" accept=".xml" />
+      <input type="file" ref={stemAInputRef} onChange={(e) => handleStemUpload(e, 'A')} className="hidden" accept="audio/*" />
+      <input type="file" ref={stemBInputRef} onChange={(e) => handleStemUpload(e, 'B')} className="hidden" accept="audio/*" />
+      <input type="file" ref={importFileInputRef} onChange={handleImportFile} className="hidden" accept=".json" />
     </div>
   );
 };

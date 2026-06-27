@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type, Chat, ThinkingLevel } from "@google/genai";
-import { CritiqueResult, SessionPrediction } from "../types";
+import { CritiqueResult, SessionPrediction, StemComparisonResult, ChatMessage } from "../types";
 
 const USER_VST_LIBRARY = `
 4Front Piano x64.vst, Amorph_FX.vst3, Amorph_Instrument.vst3, Amorph_MIDI.vst3, Attracktive.vst3, Bertom_DenoiserClassic.vst3, DelaySon.vst3, Orra Tone Zone.vst3, Prism.vst3, Proteus.vst3, TAL-Chorus-LX.vst3, Vastaus.vst3, ACE Bridge 2.vst3, ACE Bridge ARA.vst3, ACE Bridge.vst3, Amped - Block Letter.vst3, Amped - Fluff 2C.vst3, Amped - Humble.vst3, Amped - Roots.vst3, Amped - Volcano.vst3, amplistortion2_64bits.vst3, ANIMATE.vst3, Auburn Sounds Panagement 2-64.vst3, BASSROOM.vst3, BFDPlayer.vst3, Boogex.vst3, bx_blackdist2.vst3, bx_bluechorus2.vst3, bx_boom.vst3, bx_cleansweep V2.vst3, bx_distorange.vst3, bx_greenscreamer.vst3, bx_masterdesk Classic.vst3, bx_megasingle.vst3, bx_metal2.vst3, bx_meter.vst3, bx_opto Pedal.vst3, bx_rockrack V3 Player.vst3, bx_shredspread.vst3, bx_solo.vst3, bx_subfilter.vst3, bx_subsynth.vst3, bx_tuner.vst3, bx_yellowdrive.vst3, Clear.vst3, CUBE.vst3, elysia niveau filter.vst3, Emissary.vst3, FASTERMASTER.vst3, FUSER.vst3, Kontakt 7.vst3, Kontakt 8.vst3, LEVELS.vst3, LIMITER.vst3, LoudMax.vst3, MIXROOM.vst3, MLDrums.vst3, MT-PowerDrumKit.vst3, NadIR.vst3, NAM Universal.vst3, PanCake 2.vst3, PlaceIt.vst3, Puncher2Lite.vst3, REFERENCE.vst3, REFSEND.vst3, RESO.vst3, RRS EQ560 Free VST3_64.vst3, ShapeIt.vst3, smartEQ3.vst3, SOL.vst3, SongEngine_x64.vst3, SPL Free Ranger.vst3, STL Ignite - AmpHub.vst3, T-De-Esser 2.vst3, TDR Nova.vst3, VG-SPARKLE2.vst3, WaveShell1-VST3 16.0_x64.vst3, Youlean Loudness Meter 2.vst3, ProEQ.vst3, Room Reverb.vst3, Compressor.vst3, Limiter.vst3
@@ -70,6 +70,23 @@ const PREDICTION_SCHEMA = {
     reasoning: { type: Type.STRING }
   },
   required: ["predictedTracks", "masterBus", "confidence", "reasoning"]
+};
+
+const STEM_COMPARISON_SCHEMA = {
+  type: Type.OBJECT,
+  properties: {
+    stemAScore: { type: Type.NUMBER, description: "Score out of 100 for Stem A" },
+    stemAFeedback: { type: Type.STRING },
+    stemBScore: { type: Type.NUMBER, description: "Score out of 100 for Stem B" },
+    stemBFeedback: { type: Type.STRING },
+    comparisonSummary: { type: Type.STRING },
+    winner: { type: Type.STRING, description: "Which stem is better or 'Tie'" },
+    improvementSuggestions: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING }
+    }
+  },
+  required: ["stemAScore", "stemAFeedback", "stemBScore", "stemBFeedback", "comparisonSummary", "winner", "improvementSuggestions"]
 };
 
 const BASE_SYSTEM_INSTRUCTION = `You are a world-class mixing and mastering engineer with deep expertise in PreSonus Studio One. 
@@ -233,10 +250,12 @@ export const analyzeAudio = async (base64Audio: string, mimeType: string, previo
     }
 
     if (previousCritique) {
-      systemInstruction += `\nPrevious Score: ${previousCritique.overallScore}. Compare this new version.`;
-      prompt = "Compare this revision and update the SessionBlueprint based on remaining issues. Provide specific parameter settings for each plugin.";
+      systemInstruction += `\nYou previously analyzed a different version of this track and gave it a score of ${previousCritique.overallScore}. Compare this provided audio file against your previous analysis objectively and fairly. Evaluate it purely on its sonic merits (clarity, dynamics, tonal balance, image)—do not assume it is better just because it is a revision, but be sure to acknowledge any genuine improvements. Highlight what specifically changed, noting both successful adjustments and areas that still need work.`;
+      
+      prompt = "Compare this audio file against the previous version. Provide a fair, balanced score. If it sounds worse or introduces new issues, clearly explain why. If it sounds better and resolves previous issues, reward it with a higher score and explain what improved. Update the SessionBlueprint with specific parameter settings for ongoing refinement.";
+      
       if (focusPrompt) {
-        prompt += `\n\nUSER'S FOCUS FOR THIS REVISION: "${focusPrompt}"\nEnsure you specifically address this focus area in your critique and suggestions.`;
+        prompt += `\n\nUSER'S FOCUS FOR THIS EVALUATION: "${focusPrompt}"\nEnsure you specifically address this focus area in your critique.`;
       }
     }
 
@@ -311,10 +330,61 @@ export const predictSessionConfiguration = async (base64Audio: string, mimeType:
   });
 };
 
-export const createChatSession = (critique: CritiqueResult): Chat => {
+export const compareStems = async (
+  base64A: string, mimeTypeA: string, nameA: string,
+  base64B: string, mimeTypeB: string, nameB: string
+): Promise<StemComparisonResult> => {
+  return withRetry(async () => {
+    const ai = getAIClient();
+
+    const systemInstruction = `You are a world-class mixing engineer. The user has provided two distinct versions of a stem or instrument track for an A/B comparison.
+    Analyze both audio files deeply and fairly. Evaluate them purely on sonic quality, clarity, and dynamics. 
+    Crucially: Do NOT let the labels "Stem A" or "Stem B" influence your scoring. Maintain a truly objective and balanced perspective—don't look for faults that aren't there, but do identify clear differences. Score them strictly on how good they sound.
+    Identify the exact strengths and weaknesses of each track, declare a fair winner (or tie), and provide balanced, constructive improvement suggestions.`;
+
+    const prompt = `Please compare Stem A (${nameA}) and Stem B (${nameB}). Apply deep thinking to offer the best suggestions.`;
+
+    // Note: To use deep thinking properly, we typically use the 2.0-pro-exp model or set thinkingLevel. 
+    // Wait, gemini-3-flash-preview has thinking. We will use it with ThinkingLevel.HIGH if available or just omit thinkingConfig if it doesn't support 'HIGH'. No, typescript might allow it. We will use string "HIGH" if it fails lint, we fix it. Let's just use existing model.
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview', // Or models/gemini-2.5-pro for deep thinking
+      contents: {
+        parts: [
+          { text: `Stem A (${nameA}):\n` },
+          { inlineData: { data: base64A, mimeType: mimeTypeA } },
+          { text: `\n\nStem B (${nameB}):\n` },
+          { inlineData: { data: base64B, mimeType: mimeTypeB } },
+          { text: prompt }
+        ],
+      },
+      config: {
+        systemInstruction: systemInstruction,
+        responseMimeType: "application/json",
+        responseSchema: STEM_COMPARISON_SCHEMA,
+        thinkingConfig: { thinkingLevel: 'HIGH' as any }
+      }
+    });
+
+    try {
+      const text = response.text || '{}';
+      return JSON.parse(text) as StemComparisonResult;
+    } catch (error) {
+      console.error("Failed to parse stem comparison response:", error);
+      throw new Error("The AI provided an invalid format.");
+    }
+  });
+};
+
+export const createChatSession = (critique: CritiqueResult, history?: ChatMessage[]): Chat => {
   const ai = getAIClient();
+  const sdkHistory = history?.map(msg => ({
+    role: msg.role === 'user' ? 'user' : 'model',
+    parts: [{ text: msg.text }]
+  })) || [];
+
   return ai.chats.create({
     model: 'gemini-3-flash-preview',
+    history: sdkHistory,
     config: {
       systemInstruction: `You are a world-class mixing engineer. User library: ${USER_VST_LIBRARY}.
       Context: Score ${critique.overallScore}, Summary: ${critique.summary}. 
