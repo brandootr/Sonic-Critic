@@ -34,8 +34,9 @@ const FeedbackCard: React.FC<{ item: TimestampedFeedback }> = ({ item }) => (
   </div>
 );
 
-const ExpandableInsert: React.FC<{ plugin: PluginInsert }> = ({ plugin }) => {
+const ExpandableInsert: React.FC<{ plugin: PluginInsert; forceExpand?: boolean }> = ({ plugin, forceExpand }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const showExpanded = isExpanded || forceExpand;
 
   return (
     <div className="flex flex-col space-y-1">
@@ -59,14 +60,14 @@ const ExpandableInsert: React.FC<{ plugin: PluginInsert }> = ({ plugin }) => {
         </div>
         <span className="flex-1 font-medium truncate">{plugin.name}</span>
         <svg 
-          className={`w-3 h-3 text-slate-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
+          className={`w-3 h-3 text-slate-500 transition-transform ${showExpanded ? 'rotate-180' : ''}`} 
           fill="none" viewBox="0 0 24 24" stroke="currentColor"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </div>
       
-      {isExpanded && (
+      {showExpanded && (
         <div className="mx-2 p-3 bg-indigo-950/20 rounded-b-xl border-x border-b border-indigo-500/20 animate-in slide-in-from-top-2 duration-200">
            <div className="text-[9px] uppercase font-bold text-indigo-400/70 mb-2 tracking-widest">Suggested Settings</div>
            <div className="grid grid-cols-1 gap-1.5">
@@ -83,7 +84,7 @@ const ExpandableInsert: React.FC<{ plugin: PluginInsert }> = ({ plugin }) => {
   );
 };
 
-const TrackBlueprintCard: React.FC<{ track: SessionTrack }> = ({ track }) => (
+const TrackBlueprintCard: React.FC<{ track: SessionTrack; forceExpandInserts?: boolean }> = ({ track, forceExpandInserts }) => (
   <div className="bg-slate-900/60 p-6 rounded-3xl border border-slate-800/80 flex flex-col space-y-5 shadow-lg hover:border-indigo-500/30 transition-all">
     <div className="flex items-center justify-between">
       <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{track.type} Track</span>
@@ -94,7 +95,7 @@ const TrackBlueprintCard: React.FC<{ track: SessionTrack }> = ({ track }) => (
       <div className="text-[10px] uppercase font-black text-slate-500 tracking-wider">Inserts</div>
       <div className="space-y-2">
         {track.inserts.map((plugin, i) => (
-          <ExpandableInsert key={i} plugin={plugin} />
+          <ExpandableInsert key={i} plugin={plugin} forceExpand={forceExpandInserts} />
         ))}
       </div>
     </div>
@@ -152,6 +153,8 @@ const CritiqueSection: React.FC<CritiqueSectionProps> = ({
     if (!reportElement) return;
 
     setIsGeneratingPdf(true);
+    // Wait for the React state to update the DOM and expand all inserts
+    await new Promise(resolve => setTimeout(resolve, 300));
     try {
       const canvas = await html2canvas(reportElement, {
         scale: 2,
@@ -252,7 +255,7 @@ const CritiqueSection: React.FC<CritiqueSectionProps> = ({
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {critique.sessionBlueprint.tracks.map((track, idx) => (
-            <TrackBlueprintCard key={idx} track={track} />
+            <TrackBlueprintCard key={idx} track={track} forceExpandInserts={isGeneratingPdf} />
           ))}
           <div className="bg-emerald-950/10 p-6 rounded-3xl border border-emerald-500/30 flex flex-col space-y-5 shadow-lg">
              <div className="flex items-center justify-between">
@@ -264,7 +267,7 @@ const CritiqueSection: React.FC<CritiqueSectionProps> = ({
                 <div className="text-[10px] uppercase font-black text-slate-500 tracking-wider">Final Chain</div>
                 <div className="space-y-2">
                   {critique.sessionBlueprint.masterBus.inserts.map((plugin, i) => (
-                    <ExpandableInsert key={i} plugin={plugin} />
+                    <ExpandableInsert key={i} plugin={plugin} forceExpand={isGeneratingPdf} />
                   ))}
                 </div>
              </div>
@@ -294,7 +297,7 @@ const CritiqueSection: React.FC<CritiqueSectionProps> = ({
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {prediction.predictedTracks.map((track, idx) => (
-              <TrackBlueprintCard key={idx} track={track} />
+              <TrackBlueprintCard key={idx} track={track} forceExpandInserts={isGeneratingPdf} />
             ))}
             <div className="bg-emerald-950/10 p-6 rounded-3xl border border-emerald-500/30 flex flex-col space-y-5 shadow-lg">
                <div className="flex items-center justify-between">
@@ -306,7 +309,7 @@ const CritiqueSection: React.FC<CritiqueSectionProps> = ({
                   <div className="text-[10px] uppercase font-black text-slate-500 tracking-wider">Predicted Chain</div>
                   <div className="space-y-2">
                     {prediction.masterBus.inserts.map((plugin, i) => (
-                      <ExpandableInsert key={i} plugin={plugin} />
+                      <ExpandableInsert key={i} plugin={plugin} forceExpand={isGeneratingPdf} />
                     ))}
                   </div>
                </div>

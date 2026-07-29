@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { AnalysisStatus, CritiqueResult, Session, ChatMessage, SessionPrediction, StemComparisonResult, StemComparison } from './types';
-import { analyzeAudio, createChatSession, predictSessionConfiguration, compareStems } from './services/geminiService';
+import { analyzeAudio, createChatSession, predictSessionConfiguration, compareStems, setVstLibrary, getVstLibrary } from './services/geminiService';
 import Spectrogram from './components/Spectrogram';
 import CritiqueSection from './components/CritiqueSection';
 import ChatInterface from './components/ChatInterface';
@@ -60,6 +60,15 @@ const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isRevisionPromptOpen, setIsRevisionPromptOpen] = useState(false);
   const [revisionPromptText, setRevisionPromptText] = useState("");
+  const [isVstHelpOpen, setIsVstHelpOpen] = useState(false);
+  const [vstLibraryPreview, setVstLibraryPreview] = useState("");
+
+  // Sync with geminiService's getVstLibrary when modal opens
+  useEffect(() => {
+    if (isVstHelpOpen) {
+      setVstLibraryPreview(getVstLibrary());
+    }
+  }, [isVstHelpOpen]);
   
   const [appMode, setAppMode] = useState<'full_mix' | 'stem_compare'>('full_mix');
   const [stemAContent, setStemAContent] = useState<{file: File, base64: string} | null>(null);
@@ -67,6 +76,7 @@ const App: React.FC = () => {
 
   const stemAInputRef = useRef<HTMLInputElement>(null);
   const stemBInputRef = useRef<HTMLInputElement>(null);
+  const vstInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     console.log("App component mounted");
@@ -470,6 +480,23 @@ const App: React.FC = () => {
 
   const triggerImportClick = () => importFileInputRef.current?.click();
 
+  const handleVstUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const text = await file.text();
+        setVstLibrary(text);
+        setVstLibraryPreview(text);
+        setIsVstHelpOpen(false);
+        alert("VST Library updated successfully!");
+      } catch (err) {
+        console.error("VST Import Failed", err);
+        alert("Failed to read VST library text file.");
+      }
+      e.target.value = '';
+    }
+  };
+
   const startNewProject = () => {
     setCurrentSessionId(null);
     setStatus(AnalysisStatus.IDLE);
@@ -595,7 +622,15 @@ const App: React.FC = () => {
           ))}
         </div>
 
-        <div className="p-4 border-t border-slate-800 bg-slate-950/40">
+        <div className="p-4 border-t border-slate-800 bg-slate-950/40 space-y-3">
+           <button 
+            type="button"
+            onClick={() => setIsVstHelpOpen(true)}
+            className="w-full flex items-center justify-between px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-xs font-bold text-slate-400 hover:text-slate-200 transition-all"
+           >
+              <span>VST LIBRARY CONFIG</span>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+           </button>
            <button 
             type="button"
             onClick={handleOpenKeySelector}
@@ -824,11 +859,62 @@ const App: React.FC = () => {
         </div>
       )}
 
+      {/* VST Help Modal */}
+      {isVstHelpOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => setIsVstHelpOpen(false)} />
+          <div className="bg-slate-900 border border-slate-700/50 p-6 rounded-2xl shadow-2xl relative z-10 w-full max-w-lg animate-in fade-in zoom-in-95 duration-200">
+            <h3 className="text-xl font-bold text-slate-100 mb-2">Configure VST Library</h3>
+            <p className="text-slate-400 text-sm mb-4">
+              To get better mixing recommendations, you can provide the AI with a list of your installed VST plugins.
+            </p>
+            <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 mb-6">
+              <p className="text-xs text-slate-500 mb-2 font-bold uppercase tracking-wider">How to generate a list (Windows):</p>
+              <p className="text-sm text-slate-300 mb-2">Open Command Prompt and run:</p>
+              <code className="block bg-slate-900 text-emerald-400 p-3 rounded-lg text-xs font-mono mb-4 break-all selection:bg-emerald-900">
+                dir /o /b "C:\Program Files\Common Files\VST3" &gt; %userprofile%\desktop\vsts.txt
+              </code>
+              <p className="text-xs text-slate-500">This will create a <span className="text-slate-300">vsts.txt</span> file on your Desktop. Upload it here.</p>
+            </div>
+            
+            <div className="mb-6">
+              <p className="text-xs text-slate-400 mb-2 font-bold uppercase tracking-wider flex items-center justify-between">
+                <span>Currently Loaded Plugins</span>
+                <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full">Saved in Browser</span>
+              </p>
+              <textarea 
+                readOnly 
+                value={vstLibraryPreview} 
+                className="w-full h-32 bg-slate-950 text-slate-300 text-xs p-3 rounded-xl border border-slate-800 outline-none resize-none focus:border-slate-700"
+              />
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                type="button"
+                onClick={() => setIsVstHelpOpen(false)}
+                className="px-4 py-2 text-sm font-bold text-slate-400 hover:text-slate-200 transition-colors"
+              >
+                CLOSE
+              </button>
+              <button
+                type="button"
+                onClick={() => vstInputRef.current?.click()}
+                className="px-4 py-2 text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-colors shadow-lg shadow-indigo-500/20"
+              >
+                UPLOAD VSTS.TXT
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <input type="file" ref={globalFileInputRef} onChange={handleFileChange} className="hidden" accept="audio/*" />
       <input type="file" ref={songXmlInputRef} onChange={handleXmlChange} className="hidden" accept=".xml" />
       <input type="file" ref={stemAInputRef} onChange={(e) => handleStemUpload(e, 'A')} className="hidden" accept="audio/*" />
       <input type="file" ref={stemBInputRef} onChange={(e) => handleStemUpload(e, 'B')} className="hidden" accept="audio/*" />
       <input type="file" ref={importFileInputRef} onChange={handleImportFile} className="hidden" accept=".json" />
+      <input type="file" ref={vstInputRef} onChange={handleVstUpload} className="hidden" accept=".txt" />
     </div>
   );
 };

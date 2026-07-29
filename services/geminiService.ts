@@ -1,9 +1,27 @@
 import { GoogleGenAI, Type, Chat, ThinkingLevel } from "@google/genai";
 import { CritiqueResult, SessionPrediction, StemComparisonResult, ChatMessage } from "../types";
 
-const USER_VST_LIBRARY = `
+let USER_VST_LIBRARY = `
 4Front Piano x64.vst, Amorph_FX.vst3, Amorph_Instrument.vst3, Amorph_MIDI.vst3, Attracktive.vst3, Bertom_DenoiserClassic.vst3, DelaySon.vst3, Orra Tone Zone.vst3, Prism.vst3, Proteus.vst3, TAL-Chorus-LX.vst3, Vastaus.vst3, ACE Bridge 2.vst3, ACE Bridge ARA.vst3, ACE Bridge.vst3, Amped - Block Letter.vst3, Amped - Fluff 2C.vst3, Amped - Humble.vst3, Amped - Roots.vst3, Amped - Volcano.vst3, amplistortion2_64bits.vst3, ANIMATE.vst3, Auburn Sounds Panagement 2-64.vst3, BASSROOM.vst3, BFDPlayer.vst3, Boogex.vst3, bx_blackdist2.vst3, bx_bluechorus2.vst3, bx_boom.vst3, bx_cleansweep V2.vst3, bx_distorange.vst3, bx_greenscreamer.vst3, bx_masterdesk Classic.vst3, bx_megasingle.vst3, bx_metal2.vst3, bx_meter.vst3, bx_opto Pedal.vst3, bx_rockrack V3 Player.vst3, bx_shredspread.vst3, bx_solo.vst3, bx_subfilter.vst3, bx_subsynth.vst3, bx_tuner.vst3, bx_yellowdrive.vst3, Clear.vst3, CUBE.vst3, elysia niveau filter.vst3, Emissary.vst3, FASTERMASTER.vst3, FUSER.vst3, Kontakt 7.vst3, Kontakt 8.vst3, LEVELS.vst3, LIMITER.vst3, LoudMax.vst3, MIXROOM.vst3, MLDrums.vst3, MT-PowerDrumKit.vst3, NadIR.vst3, NAM Universal.vst3, PanCake 2.vst3, PlaceIt.vst3, Puncher2Lite.vst3, REFERENCE.vst3, REFSEND.vst3, RESO.vst3, RRS EQ560 Free VST3_64.vst3, ShapeIt.vst3, smartEQ3.vst3, SOL.vst3, SongEngine_x64.vst3, SPL Free Ranger.vst3, STL Ignite - AmpHub.vst3, T-De-Esser 2.vst3, TDR Nova.vst3, VG-SPARKLE2.vst3, WaveShell1-VST3 16.0_x64.vst3, Youlean Loudness Meter 2.vst3, ProEQ.vst3, Room Reverb.vst3, Compressor.vst3, Limiter.vst3
 `;
+
+export const getVstLibrary = (): string => {
+  if (typeof localStorage !== 'undefined') {
+    const saved = localStorage.getItem('sonic_vst_library');
+    if (saved) {
+      USER_VST_LIBRARY = saved;
+    }
+  }
+  return USER_VST_LIBRARY;
+};
+
+export const setVstLibrary = (vsts: string) => {
+  USER_VST_LIBRARY = vsts;
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('sonic_vst_library', vsts);
+  }
+};
+
 
 const TRACK_SCHEMA = {
   type: Type.OBJECT,
@@ -89,11 +107,11 @@ const STEM_COMPARISON_SCHEMA = {
   required: ["stemAScore", "stemAFeedback", "stemBScore", "stemBFeedback", "comparisonSummary", "winner", "improvementSuggestions"]
 };
 
-const BASE_SYSTEM_INSTRUCTION = `You are a world-class mixing and mastering engineer with deep expertise in PreSonus Studio One. 
+const BASE_SYSTEM_INSTRUCTION = () => `You are a world-class mixing and mastering engineer with deep expertise in PreSonus Studio One. 
 Provide a professional, technical, and constructive critique of the production quality.
 
 The user has the following VST plugins installed:
-${USER_VST_LIBRARY}
+${getVstLibrary()}
 
 Prioritize recommending their existing tools over buying new ones. 
 
@@ -243,7 +261,7 @@ export const analyzeAudio = async (base64Audio: string, mimeType: string, previo
     const ai = getAIClient();
 
     let prompt = "Analyze this track's mixing and mastering. Generate a full SessionBlueprint for Studio One. For each plugin listed in 'inserts', give detailed suggested settings.";
-    let systemInstruction = BASE_SYSTEM_INSTRUCTION;
+    let systemInstruction = BASE_SYSTEM_INSTRUCTION();
 
     if (songXmlContent) {
       systemInstruction += `\n\nHere is the Studio One song.xml content for technical context (track names, routing, plugins used):\n${songXmlContent}`;
@@ -294,7 +312,7 @@ export const predictSessionConfiguration = async (base64Audio: string, mimeType:
     Identify which plugins from the user's library are LIKELY already being used and how they are set.
     
     User Library:
-    ${USER_VST_LIBRARY}
+    ${getVstLibrary()}
     
     Critique Context:
     Score: ${critique.overallScore}
@@ -386,7 +404,7 @@ export const createChatSession = (critique: CritiqueResult, history?: ChatMessag
     model: 'gemini-3-flash-preview',
     history: sdkHistory,
     config: {
-      systemInstruction: `You are a world-class mixing engineer. User library: ${USER_VST_LIBRARY}.
+      systemInstruction: `You are a world-class mixing engineer. User library: ${getVstLibrary()}.
       Context: Score ${critique.overallScore}, Summary: ${critique.summary}. 
       You are also aware of the SessionBlueprint you generated for their Studio One project.`,
     },
