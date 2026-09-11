@@ -187,7 +187,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, messages, onMess
         parts.push({ inlineData: { data: base64Data, mimeType } });
       });
 
-      const response = await session.sendMessageStream({ message: { parts } });
+      const response = await session.sendMessageStream({ message: parts });
       let fullText = '';
       
       const newAiMessage: ChatMessage = { role: 'model', text: '' };

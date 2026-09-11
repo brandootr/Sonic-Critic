@@ -1,5 +1,6 @@
 {
   "name": "SonicCritique AI",
   "description": "An advanced audio analysis tool that generates spectrograms and provides professional production feedback using Gemini AI, tailored for Studio One users and AI-assisted music creation.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

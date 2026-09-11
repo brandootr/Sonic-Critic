@@ -2,12 +2,12 @@
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { AnalysisStatus, CritiqueResult, Session, ChatMessage, SessionPrediction, StemComparisonResult, StemComparison } from './types';
 import { analyzeAudio, createChatSession, predictSessionConfiguration, compareStems, setVstLibrary, getVstLibrary } from './services/geminiService';
+import { loadSessionsFromDB, saveSessionToDB, deleteSessionFromDB, migrateFromLocalStorage } from './services/db';
 import Spectrogram from './components/Spectrogram';
 import CritiqueSection from './components/CritiqueSection';
 import ChatInterface from './components/ChatInterface';
 import StemComparisonSection from './components/StemComparisonSection';
 
-const STORAGE_KEY = 'sonic_critique_sessions';
 const CURRENT_ID_KEY = 'sonic_critique_current_id';
 
 declare global {
@@ -19,11 +19,6 @@ declare global {
     openSelectKey: () => Promise<void>;
   }
 
-  /**
-   * Declaring aistudio as a global var instead of augmenting interface Window
-   * helps avoid "All declarations of 'aistudio' must have identical modifiers" errors
-   * when colliding with environment-injected type definitions.
-   */
   var aistudio: AIStudio;
 }
 
@@ -36,13 +31,7 @@ const generateId = () => {
 };
 
 const App: React.FC = () => {
-  const [sessions, setSessions] = useState<Session[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try { return JSON.parse(saved); } catch (e) { console.error("Failed to load sessions", e); }
-    }
-    return [];
-  });
+  const [sessions, setSessions] = useState<Session[]>([]);
 
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(() => {
     return localStorage.getItem(CURRENT_ID_KEY);
@@ -62,6 +51,16 @@ const App: React.FC = () => {
   const [revisionPromptText, setRevisionPromptText] = useState("");
   const [isVstHelpOpen, setIsVstHelpOpen] = useState(false);
   const [vstLibraryPreview, setVstLibraryPreview] = useState("");
+
+  // Initial load
+  useEffect(() => {
+    const initDB = async () => {
+      await migrateFromLocalStorage();
+      const loaded = await loadSessionsFromDB();
+      setSessions(loaded);
+    };
+    initDB();
+  }, []);
 
   // Sync with geminiService's getVstLibrary when modal opens
   useEffect(() => {
@@ -108,40 +107,15 @@ const App: React.FC = () => {
     return () => window.removeEventListener('focus', checkKeyStatus);
   }, [checkKeyStatus]);
 
-  const isPruningRef = useRef(false);
-
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isPruningRef.current) {
-        isPruningRef.current = false;
-        return;
+    const saveToDB = async () => {
+      // Find the current session or all sessions and save
+      // Because IndexedDB is async and we don't want to slow down rendering, we debounce or just save all
+      for (const session of sessions) {
+        await saveSessionToDB(session);
       }
-
-      try {
-        const sessionsJson = JSON.stringify(sessions);
-        localStorage.setItem(STORAGE_KEY, sessionsJson);
-      } catch (e) {
-        console.error("Failed to save sessions to localStorage.", e);
-        if (e instanceof Error && e.name === 'QuotaExceededError') {
-          isPruningRef.current = true;
-          setSessions(prev => {
-            if (prev.length <= 1) return prev;
-            // Try to clear oldest session's XML and chat history
-            const newSessions = [...prev];
-            for (let i = newSessions.length - 1; i >= 0; i--) {
-              if (newSessions[i].chatHistory.length > 0 || newSessions[i].songXmlContent) {
-                newSessions[i] = { ...newSessions[i], chatHistory: [], songXmlContent: undefined };
-                console.log("Pruned session to save space:", newSessions[i].name);
-                break;
-              }
-            }
-            return newSessions;
-          });
-        }
-      }
-    }, 1000);
-
-    return () => clearTimeout(timer);
+    };
+    saveToDB();
   }, [sessions]);
 
   useEffect(() => {
@@ -307,20 +281,28 @@ const App: React.FC = () => {
       });
       console.log("Base64 conversion complete");
 
-      // Decode for spectrogram
+      // Decode for spectrogram & metrics
+      let metrics = undefined;
       try {
         const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-        const decodedBuffer = await audioCtx.decodeAudioData(arrayBuffer.slice(0)); // slice to avoid detaching if needed
+        // Need to pass a copy because decodeAudioData detaches the buffer in some browsers
+        const bufferCopy = arrayBuffer.slice(0); 
+        const decodedBuffer = await audioCtx.decodeAudioData(bufferCopy); 
         setAudioBuffer(decodedBuffer);
         console.log("Audio decoding complete");
+        
+        // Import dynamically or assume it's available via window if imported, better yet just use standard import
+        const { analyzeAudioMetrics } = await import('./services/audioAnalyzer');
+        metrics = await analyzeAudioMetrics(decodedBuffer);
+        console.log("Deterministic Audio Metrics computed:", metrics);
       } catch (decodeErr) {
-        console.warn("Failed to decode audio for spectrogram, continuing with analysis:", decodeErr);
+        console.warn("Failed to decode audio or compute metrics, continuing with analysis:", decodeErr);
       }
 
       setStatus(isComparing ? AnalysisStatus.COMPARING : AnalysisStatus.ANALYZING_AI);
       console.log("Calling Gemini API...");
       
-      const result = await analyzeAudio(base64Audio, file.type, prevCritique || undefined, songXml, focusPrompt);
+      const result = await analyzeAudio(base64Audio, file.type, prevCritique || undefined, songXml, focusPrompt, metrics);
       console.log("Gemini analysis complete");
       
       setCurrentAudioBase64(base64Audio);
@@ -395,10 +377,11 @@ const App: React.FC = () => {
   const triggerUpload = () => globalFileInputRef.current?.click();
   const triggerXmlUpload = () => songXmlInputRef.current?.click();
 
-  const deleteSession = (e: React.MouseEvent, id: string) => {
+  const deleteSession = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation(); e.preventDefault();
     if (window.confirm("Delete this mix project? This cannot be undone.")) {
       setSessions(prev => prev.filter(s => s.id !== id));
+      await deleteSessionFromDB(id);
       if (currentSessionId === id) {
         setCurrentSessionId(null);
         setStatus(AnalysisStatus.IDLE);

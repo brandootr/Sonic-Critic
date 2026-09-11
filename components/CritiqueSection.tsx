@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CritiqueResult, TimestampedFeedback, LibraryPluginSuggestion, ChatMessage, SessionTrack, PluginInsert, SessionPrediction } from '../types';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import { createStudioOneSession } from '../services/studioOneService';
+import { createStudioOneSession, exportTextBlueprint } from '../services/studioOneService';
 
 interface CritiqueSectionProps {
   critique: CritiqueResult;
@@ -122,6 +122,18 @@ const CritiqueSection: React.FC<CritiqueSectionProps> = ({
     return 'text-red-400';
   };
 
+  const handleDownloadBlueprintText = () => {
+    const text = exportTextBlueprint(critique.sessionBlueprint);
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${fileName?.replace(/\.[^/.]+$/, "") || 'track'}-blueprint.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleDownloadSession = async () => {
     if (!audioBlob || !fileName) return;
     setIsGeneratingSession(true);
@@ -205,6 +217,18 @@ const CritiqueSection: React.FC<CritiqueSectionProps> = ({
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
               </svg>
               <span>{isGeneratingSession ? 'BUILDING...' : 'STUDIO ONE .SONG'}</span>
+            </button>
+
+            <button 
+              type="button"
+              onClick={handleDownloadBlueprintText}
+              className={`flex items-center space-x-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-lg transition-all shadow-xl active:scale-95`}
+              title="Download text blueprint"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>TEXT BLUEPRINT</span>
             </button>
 
             {!prediction && onPredict && (

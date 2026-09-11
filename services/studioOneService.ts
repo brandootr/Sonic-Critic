@@ -2,6 +2,23 @@ import JSZip from 'jszip';
 import { SessionBlueprint, SessionTrack, PluginInsert } from '../types';
 
 /**
+ * Utility to escape XML strings.
+ */
+function escapeXml(unsafe: string): string {
+  if (!unsafe) return "";
+  return unsafe.replace(/[<>&'"]/g, function (c) {
+    switch (c) {
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '&': return '&amp;';
+      case '\'': return '&apos;';
+      case '"': return '&quot;';
+      default: return c;
+    }
+  });
+}
+
+/**
  * Utility to generate Studio One style GUID strings.
  */
 function generateGuid() {
@@ -17,7 +34,7 @@ function generateGuid() {
 function generateMetaInfo(name: string, trackCount: number) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <MetaInformation>
-	<Attribute id="Document:Title" value="${name}"/>
+	<Attribute id="Document:Title" value="${escapeXml(name)}"/>
 	<Attribute id="Document:Generator" value="Studio Pro/8.0.0.110141"/>
 	<Attribute id="Document:Creator" value="SonicCritique AI"/>
 	<Attribute id="Media:SampleRate" value="44100"/>
@@ -38,7 +55,7 @@ function generateMediaPool(audioFileName: string, mediaGuid: string) {
 	<Attributes x:id="rootFolder">
 		<MediaFolder name="Audio">
 			<AudioClip mediaID="${mediaGuid}">
-				<Url x:id="path" type="1" url="media:///Media/${audioFileName}"/>
+				<Url x:id="path" type="1" url="media:///Media/${escapeXml(audioFileName)}"/>
 				<AudioTempoMap x:id="tempoMap" tempoApproved="1"/>
 				<Attributes x:id="format" sampleRate="44100" numChannels="2" bitDepth="24"/>
 			</AudioClip>
@@ -58,13 +75,13 @@ function generateSongMainXml(blueprint: SessionBlueprint, mediaGuid: string, tra
     const color = track.type === 'fx' ? 'FF9B59B6' : (track.type === 'bus' ? 'FFE67E22' : 'FF3498DB');
 
     return `
-			<MediaTrack mediaType="Audio" tempoFollow="2" trackNumber="${i + 1}" version="1" trackID="${trackId}" timeFormat="2" name="${track.name}" color="${color}">
+			<MediaTrack mediaType="Audio" tempoFollow="2" trackNumber="${i + 1}" version="1" trackID="${trackId}" timeFormat="2" name="${escapeXml(track.name)}" color="${color}">
 				<SpeakerSetup x:id="trackFormat" type="Stereo"/>
 				<UID x:id="channelID" uid="${channelId}"/>
         <Attributes x:id="attributes" height="60"/>
-        ${track.inserts.length > 0 ? `
+        ${track.inserts && track.inserts.length > 0 ? `
         <InsertList>
-          ${track.inserts.map((p) => `<Plugin name="${p.name}" id="${generateGuid()}" active="1" />`).join('')}
+          ${track.inserts.map((p) => `<Plugin name="${escapeXml(p.name)}" id="${generateGuid()}" active="1" />`).join('')}
         </InsertList>` : ''}
 			</MediaTrack>`;
   }).join('');
@@ -88,6 +105,45 @@ function generateSongMainXml(blueprint: SessionBlueprint, mediaGuid: string, tra
 		</List>
 	</Attributes>
 </Song>`;
+}
+
+export function exportTextBlueprint(blueprint: SessionBlueprint): string {
+  let text = "--- STUDIO ONE SESSION BLUEPRINT ---\n\n";
+  
+  text += "TRACKS:\n";
+  blueprint.tracks.forEach(track => {
+    text += `  [${track.type.toUpperCase()}] ${track.name}\n`;
+    if (track.inserts && track.inserts.length > 0) {
+      text += `    Inserts:\n`;
+      track.inserts.forEach(plugin => {
+        text += `      - ${plugin.name}\n`;
+        plugin.settings?.forEach(setting => {
+          text += `          * ${setting}\n`;
+        });
+      });
+    }
+    if (track.sends && track.sends.length > 0) {
+      text += `    Sends:\n`;
+      track.sends.forEach(send => {
+        text += `      -> ${send.target} (${send.level}dB)\n`;
+      });
+    }
+    text += "\n";
+  });
+  
+  text += "MASTER BUS:\n";
+  if (blueprint.masterBus?.inserts && blueprint.masterBus.inserts.length > 0) {
+    blueprint.masterBus.inserts.forEach(plugin => {
+      text += `  - ${plugin.name}\n`;
+      plugin.settings?.forEach(setting => {
+        text += `      * ${setting}\n`;
+      });
+    });
+  } else {
+    text += "  (None)\n";
+  }
+  
+  return text;
 }
 
 /**
