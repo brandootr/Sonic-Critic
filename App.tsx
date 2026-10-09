@@ -7,6 +7,7 @@ import Spectrogram from './components/Spectrogram';
 import CritiqueSection from './components/CritiqueSection';
 import ChatInterface from './components/ChatInterface';
 import StemComparisonSection from './components/StemComparisonSection';
+import { publicHosting, hasVisitorKey, setVisitorKey } from './services/openaiClient';
 
 const CURRENT_ID_KEY = 'sonic_critique_current_id';
 
@@ -27,6 +28,8 @@ const App: React.FC = () => {
   });
 
   const [hasCustomKey, setHasCustomKey] = useState(false);
+  const [isKeySetupOpen, setIsKeySetupOpen] = useState(false);
+  const [keyInput, setKeyInput] = useState('');
   const [pendingXmlContent, setPendingXmlContent] = useState<string | null>(null);
   const [status, setStatus] = useState<AnalysisStatus>(AnalysisStatus.IDLE);
   const [error, setError] = useState<string | null>(null);
@@ -76,6 +79,7 @@ const App: React.FC = () => {
   const importFileInputRef = useRef<HTMLInputElement>(null);
 
   const checkKeyStatus = useCallback(async () => {
+    if (publicHosting) { setHasCustomKey(hasVisitorKey()); return; }
     try {
       const response = await fetch('/api/openai/status');
       const { configured: hasKey } = await response.json();
@@ -88,9 +92,13 @@ const App: React.FC = () => {
   useEffect(() => {
     checkKeyStatus();
     window.addEventListener('focus', checkKeyStatus);
+    window.addEventListener('openai-key-change', checkKeyStatus);
     
 
-    return () => window.removeEventListener('focus', checkKeyStatus);
+    return () => {
+      window.removeEventListener('focus', checkKeyStatus);
+      window.removeEventListener('openai-key-change', checkKeyStatus);
+    };
   }, [checkKeyStatus]);
 
   useEffect(() => {
@@ -136,6 +144,7 @@ const App: React.FC = () => {
   }, [latestCritique, currentSession?.id]);
 
   const handleOpenKeySelector = async () => {
+    if (publicHosting) { setIsKeySetupOpen(true); return; }
     await checkKeyStatus();
     alert('Set OPENAI_API_KEY in .env.local and restart the server. OpenAI API usage is billed separately from ChatGPT.');
   };
@@ -604,7 +613,7 @@ const App: React.FC = () => {
             onClick={handleOpenKeySelector}
             className={`w-full flex items-center justify-between px-4 py-2 rounded-xl border text-xs font-bold transition-all ${hasCustomKey ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-slate-200'}`}
            >
-              <span>{hasCustomKey ? 'API KEY ACTIVE' : 'OPENAI SETUP'}</span>
+              <span>{hasCustomKey ? 'OPENAI KEY SET' : 'OPENAI SETUP'}</span>
               <div className={`w-2 h-2 rounded-full ${hasCustomKey ? 'bg-emerald-500 animate-pulse' : 'bg-slate-600'}`} />
            </button>
         </div>
@@ -793,6 +802,26 @@ const App: React.FC = () => {
         />
       )}
 
+      {isKeySetupOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="openai-key-title">
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => setIsKeySetupOpen(false)} />
+          <form className="bg-slate-900 border border-slate-700 p-6 rounded-2xl relative z-10 w-full max-w-lg" onSubmit={e => {
+            e.preventDefault(); setVisitorKey(keyInput); setKeyInput(''); setIsKeySetupOpen(false);
+          }}>
+            <h3 id="openai-key-title" className="text-xl font-bold mb-3">Connect OpenAI</h3>
+            <p className="text-slate-300 text-sm mb-3">Use your own OpenAI API key to analyze audio and chat. API usage is billed to your OpenAI account separately from ChatGPT.</p>
+            <p className="text-slate-400 text-sm mb-4">Your key stays in memory for this visit and is sent over HTTPS through this site's server to OpenAI. It is cleared when you reload. Uploaded audio, screenshots, and project context are sent to OpenAI for analysis.</p>
+            <label htmlFor="openai-key" className="block text-sm mb-2">OpenAI API key</label>
+            <input id="openai-key" autoFocus type="password" autoComplete="off" required pattern="sk-.+" value={keyInput} onChange={e => setKeyInput(e.target.value)} placeholder="sk-…" className="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 mb-4" />
+            <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-indigo-400 text-sm">Get an OpenAI API key</a>
+            <div className="flex justify-end gap-3 mt-5">
+              <button type="button" onClick={() => { setVisitorKey(''); setKeyInput(''); setIsKeySetupOpen(false); }} className="px-4 py-2 text-slate-400">Clear key</button>
+              <button type="button" onClick={() => { setKeyInput(''); setIsKeySetupOpen(false); }} className="px-4 py-2 text-slate-400">Cancel</button>
+              <button type="submit" className="px-4 py-2 bg-indigo-600 rounded-lg font-bold">Connect</button>
+            </div>
+          </form>
+        </div>
+      )}
       {/* Revision Prompt Modal */}
       {isRevisionPromptOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center">

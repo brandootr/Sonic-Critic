@@ -6,6 +6,8 @@ import { openaiMiddleware } from './server/openai.mjs';
 export default defineConfig(({ mode }) => {
     const env = { ...loadEnv(mode, '.', ''), ...process.env };
     return {
+      base: mode === 'web' ? '/sonic-critic/' : '/',
+      define: { 'import.meta.env.VITE_PUBLIC_BYOK': JSON.stringify(mode === 'web' ? 'true' : 'false') },
       server: {
         port: 3000,
         host: '127.0.0.1',

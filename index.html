@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SonicCritique AI - Professional Audio Analysis</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Sonic Critic | AI Mix Analysis by Testament of Steel</title>
+    <meta name="description" content="Analyze a mix, compare stems, review audio metrics, and receive Studio One production guidance with Sonic Critic from Testament of Steel.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://testamentofsteel.com/sonic-critic/">
     <style>
         body {
             background-color: #0f172a;
@@ -26,6 +28,39 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #64748b;
         }
+        .tos-critic-nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 0 22px;
+            background: linear-gradient(90deg, #050507fa, #111116fa);
+            border-bottom: 1px solid #303038;
+            box-shadow: 0 10px 35px #000a;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+        .tos-critic-nav a { color: #a8a8af; text-decoration: none; white-space: nowrap; }
+        .tos-critic-nav > a { color: #fff; }
+        .tos-critic-nav > a b { color: #ec1c24; margin-right: 8px; text-shadow: 0 0 14px #ec1c2488; }
+        .tos-critic-nav > div { display: flex; align-items: center; gap: 22px; margin-left: auto; }
+        .tos-critic-nav a:hover, .tos-critic-nav a:focus-visible { color: #fff; outline: none; }
+        .tos-critic-nav .active { color: #818cf8; }
+        .tos-critic-nav .exit { padding: 9px 13px; color: #fff; background: #ec1c24; }
+        #root > .min-h-screen { min-height: calc(100vh - 58px) !important; }
+        #root aside { height: calc(100vh - 58px); position: sticky; top: 58px; }
+        #root header { top: 58px; }
+        @media (max-width: 760px) {
+            .tos-critic-nav { overflow-x: auto; gap: 14px; padding: 0 12px; }
+            .tos-critic-nav > div { gap: 13px; margin-left: 0; }
+            .tos-critic-nav > div a:nth-child(2), .tos-critic-nav > div a:nth-child(4) { display: none; }
+            #root header { top: 58px; }
+        }
     </style>
 <script type="importmap">
 {
@@ -39,9 +74,12 @@
   }
 }
 </script>
-
 </head>
 <body>
+    <nav class="tos-critic-nav" aria-label="Testament of Steel navigation">
+      <a href="../index.php"><b>✦</b> TESTAMENT OF STEEL</a>
+      <div><a href="../ai-tools.html">AI Tools</a><a href="../studio/">Sonic Canvas</a><a class="active" href="./" aria-current="page">Sonic Critic</a><a href="../privacy.html">Privacy</a><a class="exit" href="../index.php">Exit Tool</a></div>
+    </nav>
     <div id="root"></div>
 <script type="module" src="/index.tsx"></script>
 </body>

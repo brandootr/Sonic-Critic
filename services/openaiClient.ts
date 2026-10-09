@@ -1,4 +1,8 @@
 export interface MediaPart { text?: string; inlineData?: { data: string; mimeType: string }; }
+export const publicHosting = (import.meta as any).env.VITE_PUBLIC_BYOK === 'true';
+let visitorKey = '';
+export const hasVisitorKey = () => Boolean(visitorKey);
+export const setVisitorKey = (key: string) => { visitorKey = key.trim(); window.dispatchEvent(new Event('openai-key-change')); };
 export interface EngineerChat {
   sendMessageStream(input: { message: MediaPart[] }): Promise<AsyncIterable<{ text: string }>>;
 }
@@ -38,9 +42,10 @@ export async function requestCompletion(input: {
     if (!part.inlineData) throw new Error('Missing audio data.');
     return audioPart(part.inlineData.data, part.inlineData.mimeType);
   })) }];
-  const response = await fetch('/api/openai/complete', {
+  if (publicHosting && !visitorKey) throw new Error('Select OpenAI Setup and enter your OpenAI API key.');
+  const response = await fetch(publicHosting ? `${(import.meta as any).env.BASE_URL}api.php` : '/api/openai/complete', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages, systemInstruction: input.config.systemInstruction, schema: input.config.responseSchema })
+    body: JSON.stringify({ messages, systemInstruction: input.config.systemInstruction, schema: input.config.responseSchema, ...(publicHosting ? { apiKey: visitorKey } : {}) })
   });
   const result = await response.json();
   if (!response.ok) {
