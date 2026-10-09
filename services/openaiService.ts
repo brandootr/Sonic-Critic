@@ -1,4 +1,5 @@
-import { GoogleGenAI, Type, Chat, ThinkingLevel } from "@google/genai";
+import { requestCompletion, type EngineerChat } from './openaiClient';
+const Type = { OBJECT: 'object', STRING: 'string', ARRAY: 'array', NUMBER: 'number' } as const;
 import { CritiqueResult, SessionPrediction, StemComparisonResult, ChatMessage } from "../types";
 
 let USER_VST_LIBRARY = `
@@ -250,15 +251,8 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
   throw lastError;
 }
 
-const getAIClient = () => {
-  const apiKey = process.env.API_KEY;
-  if (!apiKey) throw new Error("API Key is missing. Please ensure a key is selected.");
-  return new GoogleGenAI({ apiKey });
-};
-
 export const analyzeAudio = async (base64Audio: string, mimeType: string, previousCritique?: CritiqueResult, songXmlContent?: string, focusPrompt?: string, metrics?: any): Promise<CritiqueResult> => {
   return withRetry(async () => {
-    const ai = getAIClient();
 
     let prompt = "Analyze this track's mixing and mastering. Generate a full SessionBlueprint for Studio One. For each plugin listed in 'inserts', give detailed suggested settings.";
     let systemInstruction = BASE_SYSTEM_INSTRUCTION();
@@ -272,6 +266,7 @@ export const analyzeAudio = async (base64Audio: string, mimeType: string, previo
     }
 
     if (previousCritique) {
+      systemInstruction += "\nPrevious critique: " + JSON.stringify(previousCritique);
       systemInstruction += `\nYou previously analyzed a different version of this track and gave it a score of ${previousCritique.overallScore}. Compare this provided audio file against your previous analysis objectively and fairly. Evaluate it purely on its sonic merits (clarity, dynamics, tonal balance, image)—do not assume it is better just because it is a revision, but be sure to acknowledge any genuine improvements. Highlight what specifically changed, noting both successful adjustments and areas that still need work.`;
       
       prompt = "Compare this audio file against the previous version. Provide a fair, balanced score. If it sounds worse or introduces new issues, clearly explain why. If it sounds better and resolves previous issues, reward it with a higher score and explain what improved. Update the SessionBlueprint with specific parameter settings for ongoing refinement.";
@@ -281,8 +276,8 @@ export const analyzeAudio = async (base64Audio: string, mimeType: string, previo
       }
     }
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.8-flash',
+    if (focusPrompt && !previousCritique) prompt += '\nUser focus: ' + focusPrompt;
+    const response = await requestCompletion({
       contents: {
         parts: [
           { inlineData: { data: base64Audio, mimeType: mimeType } },
@@ -292,8 +287,7 @@ export const analyzeAudio = async (base64Audio: string, mimeType: string, previo
       config: {
         systemInstruction: systemInstruction,
         responseMimeType: "application/json",
-        responseSchema: CRITIQUE_SCHEMA,
-        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW }
+        responseSchema: CRITIQUE_SCHEMA
       }
     });
 
@@ -301,7 +295,7 @@ export const analyzeAudio = async (base64Audio: string, mimeType: string, previo
       const text = response.text || '{}';
       return JSON.parse(text) as CritiqueResult;
     } catch (error) {
-      console.error("Failed to parse Gemini response:", error);
+      console.error("Failed to parse OpenAI response:", error);
       throw new Error("The AI provided an invalid response format.");
     }
   });
@@ -309,7 +303,6 @@ export const analyzeAudio = async (base64Audio: string, mimeType: string, previo
 
 export const predictSessionConfiguration = async (base64Audio: string, mimeType: string, critique: CritiqueResult): Promise<SessionPrediction> => {
   return withRetry(async () => {
-    const ai = getAIClient();
 
     const systemInstruction = `You are a world-class mixing engineer. 
     Based on the audio provided and the critique already performed, predict the current Studio One session configuration.
@@ -326,8 +319,7 @@ export const predictSessionConfiguration = async (base64Audio: string, mimeType:
 
     const prompt = "Analyze the audio and predict the current track layout, plugin inserts, and master bus chain. Be as accurate as possible based on the sonic characteristics.";
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.8-flash',
+    const response = await requestCompletion({
       contents: {
         parts: [
           { inlineData: { data: base64Audio, mimeType: mimeType } },
@@ -337,8 +329,7 @@ export const predictSessionConfiguration = async (base64Audio: string, mimeType:
       config: {
         systemInstruction: systemInstruction,
         responseMimeType: "application/json",
-        responseSchema: PREDICTION_SCHEMA,
-        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW }
+        responseSchema: PREDICTION_SCHEMA
       }
     });
 
@@ -357,7 +348,6 @@ export const compareStems = async (
   base64B: string, mimeTypeB: string, nameB: string
 ): Promise<StemComparisonResult> => {
   return withRetry(async () => {
-    const ai = getAIClient();
 
     const systemInstruction = `You are a world-class mixing engineer. The user has provided two distinct versions of a stem or instrument track for an A/B comparison.
     Analyze both audio files deeply and fairly. Evaluate them purely on sonic quality, clarity, and dynamics. 
@@ -366,10 +356,7 @@ export const compareStems = async (
 
     const prompt = `Please compare Stem A (${nameA}) and Stem B (${nameB}). Apply deep thinking to offer the best suggestions.`;
 
-    // Note: To use deep thinking properly, we typically use the 2.0-pro-exp model or set thinkingLevel. 
-    // Wait, gemini-3-flash-preview has thinking. We will use it with ThinkingLevel.HIGH if available or just omit thinkingConfig if it doesn't support 'HIGH'. No, typescript might allow it. We will use string "HIGH" if it fails lint, we fix it. Let's just use existing model.
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.8-flash',
+    const response = await requestCompletion({
       contents: {
         parts: [
           { text: `Stem A (${nameA}):\n` },
@@ -382,8 +369,7 @@ export const compareStems = async (
       config: {
         systemInstruction: systemInstruction,
         responseMimeType: "application/json",
-        responseSchema: STEM_COMPARISON_SCHEMA,
-        thinkingConfig: { thinkingLevel: ThinkingLevel.HIGH }
+        responseSchema: STEM_COMPARISON_SCHEMA
       }
     });
 
@@ -397,33 +383,26 @@ export const compareStems = async (
   });
 };
 
-export const createChatSession = (critique: CritiqueResult, history?: ChatMessage[]): Chat => {
-  const ai = getAIClient();
-  const sdkHistory = history?.map(msg => {
-    const parts: any[] = [];
-    if (msg.text || (!msg.images || msg.images.length === 0)) {
-      parts.push({ text: msg.text || '' });
-    }
-    if (msg.images && msg.images.length > 0) {
-      msg.images.forEach(img => {
-        const base64Data = img.split(',')[1];
-        const mimeType = img.split(';')[0].split(':')[1];
-        parts.push({ inlineData: { data: base64Data, mimeType } });
+export const createChatSession = (critique: CritiqueResult, history: ChatMessage[] = []): EngineerChat => {
+  const messages = history.map(msg => ({
+    role: msg.role === 'model' ? 'assistant' as const : 'user' as const,
+    content: [
+      { type: 'text', text: msg.text || '' },
+      ...(msg.images || []).map(url => ({ type: 'image_url', image_url: { url } }))
+    ]
+  }));
+  return {
+    async sendMessageStream({ message }) {
+      const content = message.map(part => part.text !== undefined
+        ? { type: 'text', text: part.text }
+        : { type: 'image_url', image_url: { url: 'data:' + part.inlineData!.mimeType + ';base64,' + part.inlineData!.data } });
+      const next = { role: 'user' as const, content };
+      const response = await requestCompletion({
+        messages: [...messages, next],
+        config: { systemInstruction: 'You are a mixing engineer. User library: ' + getVstLibrary() + '. Full critique and session blueprint: ' + JSON.stringify(critique) }
       });
+      messages.push(next, { role: 'assistant', content: [{ type: 'text', text: response.text }] });
+      return (async function* () { yield { text: response.text }; })();
     }
-    return {
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts
-    };
-  }) || [];
-
-  return ai.chats.create({
-    model: 'gemini-3.8-flash',
-    history: sdkHistory,
-    config: {
-      systemInstruction: `You are a world-class mixing engineer. User library: ${getVstLibrary()}.
-      Context: Score ${critique.overallScore}, Summary: ${critique.summary}. 
-      You are also aware of the SessionBlueprint you generated for their Studio One project.`,
-    },
-  });
+  };
 };

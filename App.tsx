@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { AnalysisStatus, CritiqueResult, Session, ChatMessage, SessionPrediction, StemComparisonResult, StemComparison } from './types';
-import { analyzeAudio, createChatSession, predictSessionConfiguration, compareStems, setVstLibrary, getVstLibrary } from './services/geminiService';
+import { analyzeAudio, createChatSession, predictSessionConfiguration, compareStems, setVstLibrary, getVstLibrary } from './services/openaiService';
 import { loadSessionsFromDB, saveSessionToDB, deleteSessionFromDB, migrateFromLocalStorage } from './services/db';
 import Spectrogram from './components/Spectrogram';
 import CritiqueSection from './components/CritiqueSection';
@@ -10,17 +10,6 @@ import StemComparisonSection from './components/StemComparisonSection';
 
 const CURRENT_ID_KEY = 'sonic_critique_current_id';
 
-declare global {
-  /**
-   * AIStudio interface for managing API keys in the host environment.
-   */
-  interface AIStudio {
-    hasSelectedApiKey: () => Promise<boolean>;
-    openSelectKey: () => Promise<void>;
-  }
-
-  var aistudio: AIStudio;
-}
 
 const generateId = () => {
   try {
@@ -62,7 +51,7 @@ const App: React.FC = () => {
     initDB();
   }, []);
 
-  // Sync with geminiService's getVstLibrary when modal opens
+  // Sync with openaiService's getVstLibrary when modal opens
   useEffect(() => {
     if (isVstHelpOpen) {
       setVstLibraryPreview(getVstLibrary());
@@ -88,7 +77,8 @@ const App: React.FC = () => {
 
   const checkKeyStatus = useCallback(async () => {
     try {
-      const hasKey = await window.aistudio.hasSelectedApiKey();
+      const response = await fetch('/api/openai/status');
+      const { configured: hasKey } = await response.json();
       setHasCustomKey(hasKey);
     } catch (e) {
       console.error("Failed to check API key status", e);
@@ -99,10 +89,6 @@ const App: React.FC = () => {
     checkKeyStatus();
     window.addEventListener('focus', checkKeyStatus);
     
-    // Check if API key is missing
-    if (!process.env.API_KEY) {
-      console.warn("API_KEY environment variable is not set. AI features may fail unless a personal key is selected.");
-    }
 
     return () => window.removeEventListener('focus', checkKeyStatus);
   }, [checkKeyStatus]);
@@ -150,9 +136,8 @@ const App: React.FC = () => {
   }, [latestCritique, currentSession?.id]);
 
   const handleOpenKeySelector = async () => {
-    await window.aistudio.openSelectKey();
-    setHasCustomKey(true);
-    checkKeyStatus();
+    await checkKeyStatus();
+    alert('Set OPENAI_API_KEY in .env.local and restart the server. OpenAI API usage is billed separately from ChatGPT.');
   };
 
   const updateChatHistory = useCallback((messages: ChatMessage[]) => {
@@ -242,9 +227,9 @@ const App: React.FC = () => {
       setStemBContent(null);
     } catch (err: any) {
       console.error("Stem Comparison Error:", err);
-      if (err.message?.includes("Requested entity was not found.")) {
+      if (err.message?.includes("401")) {
         setHasCustomKey(false);
-        window.aistudio.openSelectKey().then(() => setHasCustomKey(true));
+        checkKeyStatus();
       }
       setIsQuotaError(err.message?.includes('429') || err.message?.toLowerCase().includes('quota'));
       setError(err.message || "An error occurred during comparison.");
@@ -300,10 +285,10 @@ const App: React.FC = () => {
       }
 
       setStatus(isComparing ? AnalysisStatus.COMPARING : AnalysisStatus.ANALYZING_AI);
-      console.log("Calling Gemini API...");
+      console.log("Calling OpenAI API...");
       
       const result = await analyzeAudio(base64Audio, file.type, prevCritique || undefined, songXml, focusPrompt, metrics);
-      console.log("Gemini analysis complete");
+      console.log("OpenAI analysis complete");
       
       setCurrentAudioBase64(base64Audio);
       
@@ -323,9 +308,9 @@ const App: React.FC = () => {
       setStatus(AnalysisStatus.SUCCESS);
     } catch (err: any) {
       console.error("ProcessAudioFile Error:", err);
-      if (err.message?.includes("Requested entity was not found.")) {
+      if (err.message?.includes("401")) {
         setHasCustomKey(false);
-        window.aistudio.openSelectKey().then(() => setHasCustomKey(true));
+        checkKeyStatus();
       }
       const isQuota = err.message?.includes('429') || err.message?.toLowerCase().includes('quota');
       setIsQuotaError(isQuota);
@@ -619,7 +604,7 @@ const App: React.FC = () => {
             onClick={handleOpenKeySelector}
             className={`w-full flex items-center justify-between px-4 py-2 rounded-xl border text-xs font-bold transition-all ${hasCustomKey ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-slate-200'}`}
            >
-              <span>{hasCustomKey ? 'API KEY ACTIVE' : 'SELECT API KEY'}</span>
+              <span>{hasCustomKey ? 'API KEY ACTIVE' : 'OPENAI SETUP'}</span>
               <div className={`w-2 h-2 rounded-full ${hasCustomKey ? 'bg-emerald-500 animate-pulse' : 'bg-slate-600'}`} />
            </button>
         </div>
@@ -801,7 +786,6 @@ const App: React.FC = () => {
       {latestCritique && chatSession && (
         <ChatInterface 
           session={chatSession}
-          critique={latestCritique}
           messages={currentSession?.chatHistory || []}
           onMessagesChange={updateChatHistory}
           isOpen={isChatOpen} 

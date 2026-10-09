@@ -1,10 +1,10 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Chat } from '@google/genai';
+import type { EngineerChat } from '../services/openaiClient';
 import { ChatMessage } from '../types';
 
 interface ChatInterfaceProps {
-  session: Chat;
+  session: EngineerChat;
   messages: ChatMessage[];
   onMessagesChange: (messages: ChatMessage[]) => void;
   isOpen: boolean;
