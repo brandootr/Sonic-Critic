@@ -12,11 +12,11 @@ For a local built version, run `npm run build`, then `npm run preview`. Both com
 
 ## Hosted website
 
-The version published at https://testamentofsteel.com/sonic-critic/ uses visitor-provided OpenAI keys. Select **OpenAI Setup** and enter your key. It remains in browser memory for the visit, clears on reload, and is forwarded over HTTPS through the PHP endpoint to OpenAI. The endpoint does not store keys. Each visitor pays their own API charges.
+The version published at https://testamentofsteel.com/sonic-critic/ uses visitor-provided OpenAI keys. Select **OpenAI Setup**, enter your key, and choose **Connect & remember**. It is remembered for 30 days in a cookie marked Secure, HttpOnly, and SameSite=Strict, scoped to `/sonic-critic/`. Browser JavaScript cannot read the saved cookie; the PHP endpoint reads it when forwarding requests to OpenAI. **Clear key** removes it from this browser. The server does not persist keys in files or a database. Each visitor pays their own API charges. Browser cookie restrictions or clearing browsing data can remove the saved key sooner.
 
 Build the hosted version with `npm run build -- --mode web`. This sets `/sonic-critic/` as the asset base and includes `public/api.php` in `dist`. Upload the resulting files to PHP hosting with cURL enabled. Static-only hosting cannot run this API. The endpoint only accepts same-origin browser requests, limits request bodies to 64 MB, and enforces six POST requests per minute per IP using hashed-address counters in the host's temporary directory. It uses fixed OpenAI endpoints and model names. No shared server key is deployed.
 
-The key is server-only and never embedded in the browser bundle. Restart the server after changing `.env.local`. The OpenAI Setup button explains configuration, and the status indicator means a key is configured, not that its account balance or model access has been verified.
+For local hosting, `OPENAI_API_KEY` can come from the process environment or `.env.local`; it stays server-only and is never embedded in the browser bundle. Restart the server after changing it. The public PHP website uses each visitor's cookie rather than exposing a shared environment key to public requests. The status indicator means a key is configured, not that its account balance or model access has been verified.
 
 Audio is sent to `gpt-audio-1.5` for listening analysis. `gpt-4.1` formats the findings into validated JSON reports and handles text/screenshot chat. Override `OPENAI_AUDIO_MODEL` and `OPENAI_CHAT_MODEL` in `.env.local` with models supporting those respective features. Audio reports use two API calls. Chat replies appear when the full response arrives.
 

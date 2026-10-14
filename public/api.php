@@ -1,12 +1,21 @@
 <?php
-// Visitor-provided keys: never stored, logged, or used as shared credentials.
+// Visitor keys are persisted only in a Secure, HttpOnly, SameSite cookie.
 header('Content-Type: application/json');
 header('Cache-Control: no-store');
 header('X-Content-Type-Options: nosniff');
 function respond($status, $data) { http_response_code($status); echo json_encode($data); exit; }
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') respond(405, ['error' => 'POST required.']);
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if ($origin !== '' && $origin !== 'https://testamentofsteel.com') respond(403, ['error' => 'Cross-origin requests are disabled.']);
+const KEY_COOKIE = '__Secure-sonic_openai';
+function valid_key($key) { return is_string($key) && strlen($key) <= 512 && preg_match('/^sk-[A-Za-z0-9_-]{10,}$/D', $key); }
+function save_key_cookie($key) {
+    return setcookie(KEY_COOKIE, $key, ['expires' => $key === '' ? time() - 3600 : time() + 30 * 86400,
+        'path' => '/sonic-critic/', 'secure' => true, 'httponly' => true, 'samesite' => 'Strict']);
+}
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['action'] ?? '') === 'status') {
+    respond(200, ['configured' => (bool)valid_key($_COOKIE[KEY_COOKIE] ?? '')]);
+}
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') respond(405, ['error' => 'POST required.']);
 if (stripos($_SERVER['CONTENT_TYPE'] ?? '', 'application/json') !== 0) respond(415, ['error' => 'JSON required.']);
 // Six requests/minute/IP. Store only a hashed address and counters outside webroot.
 $bucket = sys_get_temp_dir() . '/sonic-openai-' . hash('sha256', $_SERVER['REMOTE_ADDR'] ?? 'unknown') . '.json';
@@ -23,8 +32,17 @@ $raw = file_get_contents('php://input', false, null, 0, 64 * 1024 * 1024 + 1);
 if (strlen($raw) > 64 * 1024 * 1024) respond(413, ['error' => 'Audio is too large.']);
 $body = json_decode($raw, true); unset($raw);
 if (!is_array($body)) respond(400, ['error' => 'Invalid JSON.']);
-$key = $body['apiKey'] ?? '';
-if (!is_string($key) || !preg_match('/^sk-[A-Za-z0-9_-]{10,}$/D', $key)) respond(401, ['error' => 'Enter your OpenAI API key using OpenAI Setup.']);
+$action = $body['action'] ?? '';
+if ($action === 'clear') {
+    if (!save_key_cookie('')) respond(500, ['error' => 'Cannot clear key cookie.']);
+    respond(200, ['configured' => false]);
+}
+$key = $body['apiKey'] ?? ($_COOKIE[KEY_COOKIE] ?? '');
+if (!valid_key($key)) respond(401, ['error' => 'Enter your OpenAI API key using OpenAI Setup.']);
+if ($action === 'remember') {
+    if (!save_key_cookie($key)) respond(500, ['error' => 'Cannot save key cookie.']);
+    respond(200, ['configured' => true]);
+}
 $messages = $body['messages'] ?? null; $system = $body['systemInstruction'] ?? null; $schema = $body['schema'] ?? null;
 if (!is_array($messages) || count($messages) === 0 || !is_string($system)) respond(400, ['error' => 'Invalid request.']);
 $hasAudio = false;

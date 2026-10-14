@@ -7,7 +7,7 @@ import Spectrogram from './components/Spectrogram';
 import CritiqueSection from './components/CritiqueSection';
 import ChatInterface from './components/ChatInterface';
 import StemComparisonSection from './components/StemComparisonSection';
-import { publicHosting, hasVisitorKey, setVisitorKey } from './services/openaiClient';
+import { publicHosting, refreshVisitorKey, setVisitorKey } from './services/openaiClient';
 
 const CURRENT_ID_KEY = 'sonic_critique_current_id';
 
@@ -30,6 +30,8 @@ const App: React.FC = () => {
   const [hasCustomKey, setHasCustomKey] = useState(false);
   const [isKeySetupOpen, setIsKeySetupOpen] = useState(false);
   const [keyInput, setKeyInput] = useState('');
+  const [keyError, setKeyError] = useState('');
+  const [savingKey, setSavingKey] = useState(false);
   const [pendingXmlContent, setPendingXmlContent] = useState<string | null>(null);
   const [status, setStatus] = useState<AnalysisStatus>(AnalysisStatus.IDLE);
   const [error, setError] = useState<string | null>(null);
@@ -79,8 +81,8 @@ const App: React.FC = () => {
   const importFileInputRef = useRef<HTMLInputElement>(null);
 
   const checkKeyStatus = useCallback(async () => {
-    if (publicHosting) { setHasCustomKey(hasVisitorKey()); return; }
     try {
+      if (publicHosting) { setHasCustomKey(await refreshVisitorKey()); return; }
       const response = await fetch('/api/openai/status');
       const { configured: hasKey } = await response.json();
       setHasCustomKey(hasKey);
@@ -144,7 +146,7 @@ const App: React.FC = () => {
   }, [latestCritique, currentSession?.id]);
 
   const handleOpenKeySelector = async () => {
-    if (publicHosting) { setIsKeySetupOpen(true); return; }
+    if (publicHosting) { setKeyError(''); setIsKeySetupOpen(true); return; }
     await checkKeyStatus();
     alert('Set OPENAI_API_KEY in .env.local and restart the server. OpenAI API usage is billed separately from ChatGPT.');
   };
@@ -805,19 +807,28 @@ const App: React.FC = () => {
       {isKeySetupOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="openai-key-title">
           <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => setIsKeySetupOpen(false)} />
-          <form className="bg-slate-900 border border-slate-700 p-6 rounded-2xl relative z-10 w-full max-w-lg" onSubmit={e => {
-            e.preventDefault(); setVisitorKey(keyInput); setKeyInput(''); setIsKeySetupOpen(false);
+          <form className="bg-slate-900 border border-slate-700 p-6 rounded-2xl relative z-10 w-full max-w-lg" onSubmit={async e => {
+            e.preventDefault(); setSavingKey(true); setKeyError('');
+            try { await setVisitorKey(keyInput); setKeyInput(''); setIsKeySetupOpen(false); }
+            catch (error) { setKeyError(error instanceof Error ? error.message : 'Cannot save key.'); }
+            finally { setSavingKey(false); }
           }}>
             <h3 id="openai-key-title" className="text-xl font-bold mb-3">Connect OpenAI</h3>
             <p className="text-slate-300 text-sm mb-3">Use your own OpenAI API key to analyze audio and chat. API usage is billed to your OpenAI account separately from ChatGPT.</p>
-            <p className="text-slate-400 text-sm mb-4">Your key stays in memory for this visit and is sent over HTTPS through this site's server to OpenAI. It is cleared when you reload. Uploaded audio, screenshots, and project context are sent to OpenAI for analysis.</p>
+            <p className="text-slate-400 text-sm mb-4">Your key is remembered for 30 days in an HTTPS-only cookie that JavaScript cannot read. Use Clear key to remove it from this browser. Uploaded audio, screenshots, and project context are sent through this site's server to OpenAI for analysis.</p>
+            {keyError && <p role="alert" className="text-red-400 text-sm mb-3">{keyError}</p>}
             <label htmlFor="openai-key" className="block text-sm mb-2">OpenAI API key</label>
             <input id="openai-key" autoFocus type="password" autoComplete="off" required pattern="sk-.+" value={keyInput} onChange={e => setKeyInput(e.target.value)} placeholder="sk-…" className="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 mb-4" />
             <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-indigo-400 text-sm">Get an OpenAI API key</a>
             <div className="flex justify-end gap-3 mt-5">
-              <button type="button" onClick={() => { setVisitorKey(''); setKeyInput(''); setIsKeySetupOpen(false); }} className="px-4 py-2 text-slate-400">Clear key</button>
+              <button type="button" disabled={savingKey} onClick={async () => {
+                setSavingKey(true); setKeyError('');
+                try { await setVisitorKey(''); setKeyInput(''); setIsKeySetupOpen(false); }
+                catch (error) { setKeyError(error instanceof Error ? error.message : 'Cannot clear key.'); }
+                finally { setSavingKey(false); }
+              }} className="px-4 py-2 text-slate-400">Clear key</button>
               <button type="button" onClick={() => { setKeyInput(''); setIsKeySetupOpen(false); }} className="px-4 py-2 text-slate-400">Cancel</button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 rounded-lg font-bold">Connect</button>
+              <button type="submit" disabled={savingKey} className="px-4 py-2 bg-indigo-600 rounded-lg font-bold disabled:opacity-50">{savingKey ? 'Saving…' : 'Connect & remember'}</button>
             </div>
           </form>
         </div>

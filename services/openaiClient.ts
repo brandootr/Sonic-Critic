@@ -1,8 +1,25 @@
 export interface MediaPart { text?: string; inlineData?: { data: string; mimeType: string }; }
 export const publicHosting = (import.meta as any).env.VITE_PUBLIC_BYOK === 'true';
-let visitorKey = '';
-export const hasVisitorKey = () => Boolean(visitorKey);
-export const setVisitorKey = (key: string) => { visitorKey = key.trim(); window.dispatchEvent(new Event('openai-key-change')); };
+let keyConfigured = false;
+export const hasVisitorKey = () => keyConfigured;
+const keyEndpoint = () => `${(import.meta as any).env.BASE_URL}api.php`;
+export async function refreshVisitorKey() {
+  const response = await fetch(`${keyEndpoint()}?action=status`, { cache: 'no-store' });
+  if (!response.ok) throw new Error('Cannot check saved OpenAI key.');
+  const result = await response.json();
+  keyConfigured = Boolean(result.configured);
+  return keyConfigured;
+}
+export async function setVisitorKey(key: string) {
+  const response = await fetch(keyEndpoint(), {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: key.trim() ? 'remember' : 'clear', apiKey: key.trim() })
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || 'Cannot save OpenAI key.');
+  keyConfigured = Boolean(result.configured);
+  window.dispatchEvent(new Event('openai-key-change'));
+}
 export interface EngineerChat {
   sendMessageStream(input: { message: MediaPart[] }): Promise<AsyncIterable<{ text: string }>>;
 }
@@ -42,10 +59,9 @@ export async function requestCompletion(input: {
     if (!part.inlineData) throw new Error('Missing audio data.');
     return audioPart(part.inlineData.data, part.inlineData.mimeType);
   })) }];
-  if (publicHosting && !visitorKey) throw new Error('Select OpenAI Setup and enter your OpenAI API key.');
   const response = await fetch(publicHosting ? `${(import.meta as any).env.BASE_URL}api.php` : '/api/openai/complete', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages, systemInstruction: input.config.systemInstruction, schema: input.config.responseSchema, ...(publicHosting ? { apiKey: visitorKey } : {}) })
+    body: JSON.stringify({ messages, systemInstruction: input.config.systemInstruction, schema: input.config.responseSchema })
   });
   const result = await response.json();
   if (!response.ok) {
