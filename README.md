@@ -29,3 +29,5 @@ OpenAI API usage is billed separately from a ChatGPT subscription. An OpenAI API
 `npm run lint`, `npm test`, and `npm run build`.
 
 Tests use mocked OpenAI responses, so they do not spend API credits. A real audio request still needs your configured key.
+
+Hosted audio requests above 256 KiB use small ordered upload parts to fit the host's upstream request limit. Parts are stored outside the public web directory with private file permissions and bound to the visitor's key and IP. Complete or cancelled uploads are removed immediately; stale uploads are cleaned after 30 minutes when a new upload begins. The assembled request remains limited to 64 MiB. Upload parts have a separate 300-per-minute IP limit; analysis requests retain the six-per-minute limit.

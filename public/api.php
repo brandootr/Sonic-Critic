@@ -17,14 +17,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['action'] ?? '') === 'status'
 }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') respond(405, ['error' => 'POST required.']);
 if (stripos($_SERVER['CONTENT_TYPE'] ?? '', 'application/json') !== 0) respond(415, ['error' => 'JSON required.']);
+require __DIR__ . '/uploads.php';
+$uploadAction = $_GET['action'] ?? '';
+$isUploadPart = in_array($uploadAction, ['upload', 'cancelUpload'], true);
+if ($isUploadPart && !valid_key($_COOKIE[KEY_COOKIE] ?? '')) respond(401, ['error' => 'Enter your OpenAI API key using OpenAI Setup.']);
 // Six requests/minute/IP. Store only a hashed address and counters outside webroot.
-$bucket = sys_get_temp_dir() . '/sonic-openai-' . hash('sha256', $_SERVER['REMOTE_ADDR'] ?? 'unknown') . '.json';
+$bucket = sys_get_temp_dir() . '/sonic-openai-' . ($isUploadPart ? 'parts-' : '') . hash('sha256', $_SERVER['REMOTE_ADDR'] ?? 'unknown') . '.json';
 $lock = @fopen($bucket, 'c+');
 if (!$lock || !flock($lock, LOCK_EX)) respond(503, ['error' => 'Request limiter unavailable.']);
 @chmod($bucket, 0600);
 $counter = json_decode(stream_get_contents($lock), true) ?: ['start' => time(), 'count' => 0];
 if (time() - $counter['start'] >= 60) $counter = ['start' => time(), 'count' => 0];
-if ($counter['count'] >= 6) { flock($lock, LOCK_UN); fclose($lock); header('Retry-After: 60'); respond(429, ['error' => 'Too many requests. Wait one minute and retry.']); }
+if ($counter['count'] >= ($isUploadPart ? 300 : 6)) { flock($lock, LOCK_UN); fclose($lock); header('Retry-After: 60'); respond(429, ['error' => 'Too many requests. Wait one minute and retry.']); }
 $counter['count']++;
 ftruncate($lock, 0); rewind($lock); fwrite($lock, json_encode($counter)); fflush($lock); flock($lock, LOCK_UN); fclose($lock);
 if ((int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 64 * 1024 * 1024) respond(413, ['error' => 'Audio is too large. Upload a shorter excerpt.']);
@@ -32,6 +36,11 @@ $raw = file_get_contents('php://input', false, null, 0, 64 * 1024 * 1024 + 1);
 if (strlen($raw) > 64 * 1024 * 1024) respond(413, ['error' => 'Audio is too large.']);
 $body = json_decode($raw, true); unset($raw);
 if (!is_array($body)) respond(400, ['error' => 'Invalid JSON.']);
+if ($isUploadPart) {
+    $key = $_COOKIE[KEY_COOKIE];
+    if ($uploadAction === 'cancelUpload') { remove_upload(upload_paths($body['uploadId'] ?? '', $key)); respond(200, ['cancelled' => true]); }
+    accept_upload($body, $key);
+}
 $action = $body['action'] ?? '';
 if ($action === 'clear') {
     if (!save_key_cookie('')) respond(500, ['error' => 'Cannot clear key cookie.']);
@@ -39,6 +48,7 @@ if ($action === 'clear') {
 }
 $key = $body['apiKey'] ?? ($_COOKIE[KEY_COOKIE] ?? '');
 if (!valid_key($key)) respond(401, ['error' => 'Enter your OpenAI API key using OpenAI Setup.']);
+if ($action === 'analyzeUpload') $body = finish_upload($body['uploadId'] ?? '', $key);
 if ($action === 'remember') {
     if (!save_key_cookie($key)) respond(500, ['error' => 'Cannot save key cookie.']);
     respond(200, ['configured' => true]);

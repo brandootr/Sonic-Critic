@@ -1,3 +1,5 @@
+import { readApiResponse } from './apiResponse.mjs';
+import { uploadRequest } from './uploadRequest.mjs';
 export interface MediaPart { text?: string; inlineData?: { data: string; mimeType: string }; }
 export const publicHosting = (import.meta as any).env.VITE_PUBLIC_BYOK === 'true';
 let keyConfigured = false;
@@ -5,8 +7,7 @@ export const hasVisitorKey = () => keyConfigured;
 const keyEndpoint = () => `${(import.meta as any).env.BASE_URL}api.php`;
 export async function refreshVisitorKey() {
   const response = await fetch(`${keyEndpoint()}?action=status`, { cache: 'no-store' });
-  if (!response.ok) throw new Error('Cannot check saved OpenAI key.');
-  const result = await response.json();
+  const result = await readApiResponse(response);
   keyConfigured = Boolean(result.configured);
   return keyConfigured;
 }
@@ -15,8 +16,7 @@ export async function setVisitorKey(key: string) {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: key.trim() ? 'remember' : 'clear', apiKey: key.trim() })
   });
-  const result = await response.json();
-  if (!response.ok) throw new Error(result.error || 'Cannot save OpenAI key.');
+  const result = await readApiResponse(response);
   keyConfigured = Boolean(result.configured);
   window.dispatchEvent(new Event('openai-key-change'));
 }
@@ -59,14 +59,18 @@ export async function requestCompletion(input: {
     if (!part.inlineData) throw new Error('Missing audio data.');
     return audioPart(part.inlineData.data, part.inlineData.mimeType);
   })) }];
+  const body = JSON.stringify({ messages, systemInstruction: input.config.systemInstruction, schema: input.config.responseSchema });
+  if (new Blob([body]).size > 64 * 1024 * 1024) throw new Error('This audio upload exceeds the 64 MB request limit. Try a smaller file or a shorter excerpt.');
+  if (publicHosting) {
+    const result = await uploadRequest(keyEndpoint(), body);
+    if (typeof result.text !== 'string') throw new Error('The website returned an incomplete analysis response. Please retry.');
+    return result;
+  }
   const response = await fetch(publicHosting ? `${(import.meta as any).env.BASE_URL}api.php` : '/api/openai/complete', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages, systemInstruction: input.config.systemInstruction, schema: input.config.responseSchema })
+    body
   });
-  const result = await response.json();
-  if (!response.ok) {
-    const error = new Error(result.error || 'OpenAI request failed.') as Error & { status: number };
-    error.status = response.status; throw error;
-  }
+  const result = await readApiResponse(response);
+  if (typeof result.text !== 'string') throw new Error('The website returned an incomplete analysis response. Please retry.');
   return result;
 }
